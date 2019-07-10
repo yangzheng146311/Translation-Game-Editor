@@ -10,7 +10,7 @@ public class OBJ_Drag : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        obj_sprite = Resources.Load<Sprite>("Art assets/Objects art/" + this.name);
+        obj_sprite = Resources.Load<Sprite>("Art assets/Objects art(with board)/" + this.name);
         this.GetComponent<Image>().sprite = obj_sprite;
     }
 
