@@ -8,6 +8,7 @@ public class DragableObjects : MonoBehaviour
     private float startPosX;
     private float startPosY;
     private bool isBeingHeld = false;
+
    
 
     // Update is called once per frame
@@ -60,5 +61,6 @@ public class DragableObjects : MonoBehaviour
     private void OnMouseUp()
     {
         isBeingHeld = false;
+
     }
 }
