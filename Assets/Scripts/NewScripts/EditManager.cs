@@ -132,4 +132,16 @@ public class EditManager : MonoBehaviour
             x.Value.SetActive(true);
 
     }
+
+    //
+    public void SavePage()
+    {
+
+    }
+    public void ClearPage()
+    {
+
+    }
+
+
 }
