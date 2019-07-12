@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MusicList : MonoBehaviour
 {
@@ -9,7 +10,8 @@ public class MusicList : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Sound=Resources.Load<AudioClip>("Audio/" + this.name);
+        transform.GetChild(1).GetComponent<Text>().text = this.name;
     }
 
     // Update is called once per frame
