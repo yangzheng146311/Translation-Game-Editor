@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class MusicList : MonoBehaviour
 {
-    public AudioClip Sound1;
-    public AudioClip Sound2;
+    public AudioClip Sound;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +20,6 @@ public class MusicList : MonoBehaviour
 
     public void Play()
     {
-        SoundManager.instance.RandomizeSfx(Sound1, Sound2);
+        SoundManager.instance.PlaySingle(Sound);
     }
 }
