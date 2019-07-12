@@ -157,14 +157,22 @@ public class CharacterCreator : MonoBehaviour
     }
     public void saveData()
     {
-       
-        if (PlayerPrefs.HasKey("ID"))
-            PlayerPrefs.DeleteKey("ID");
+
+        // test code. * Get current page from editor manager instead.
+        // --------------------------------------------
+        int currentPage = 0;
+
+        string characterIndex = currentPage.ToString() + "Character";
+
+        if (PlayerPrefs.HasKey(characterIndex))
+            PlayerPrefs.DeleteKey(characterIndex);
             
-        PlayerPrefs.SetString("ID", ID);
+        PlayerPrefs.SetString(characterIndex, ID);
+
         PlayerPrefs.Save();
 
     }
+
     public void clearData()
     {
         head = 0;
@@ -172,9 +180,15 @@ public class CharacterCreator : MonoBehaviour
         legs = 0;
         hat = 0;
         ID = "00000000";
-   
-        if (PlayerPrefs.HasKey("ID"))
-            PlayerPrefs.DeleteKey("ID");
+
+        // test code. * Get current page from editor manager instead.
+        // --------------------------------------------
+        int currentPage = 0;
+
+        string characterIndex = currentPage.ToString() + "Character";
+
+        if (PlayerPrefs.HasKey(characterIndex))
+            PlayerPrefs.DeleteKey(characterIndex);
 
         PlayerPrefs.Save();
 

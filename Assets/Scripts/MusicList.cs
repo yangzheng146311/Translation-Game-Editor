@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[SerializeField]
 public class MusicList : MonoBehaviour
 {
     public AudioClip Sound;
-
+    static public string BGMName = "";
     // Start is called before the first frame update
     void Start()
     {
@@ -23,5 +24,26 @@ public class MusicList : MonoBehaviour
     public void Play()
     {
         SoundManager.instance.PlaySingle(Sound);
+        SoundManager.instance.GetComponent<AudioSource>().clip = Sound;
+        SaveBGMName();
     }
+
+    void SaveBGMName()
+    {
+        if (this.name != "None")
+            BGMName = this.name;
+
+        // test code. * Get current page from editor manager instead.
+        // --------------------------------------------
+        int currentPage = 0;
+
+        if (PlayerPrefs.HasKey(currentPage.ToString()+"BGM"))
+            PlayerPrefs.DeleteKey("BGM");
+
+        PlayerPrefs.SetString("BGM", this.name);
+
+        PlayerPrefs.Save();
+
+    }
+
 }
