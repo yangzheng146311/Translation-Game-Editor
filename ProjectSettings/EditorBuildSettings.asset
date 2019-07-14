@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/EditDrag.unity
-    guid: 0c97e44aab2d2ae44a24d92fbbb783d2
+    path: Assets/Scenes/MainScene.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: df028795ffd3cf2419dda68cabb5f87f
   m_configObjects: {}

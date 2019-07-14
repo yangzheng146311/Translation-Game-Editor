@@ -10,7 +10,7 @@ public class BG_Switch : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        bg = GameObject.Find("background");
+        
         background = Resources.Load<Sprite>("Art assets/Background art/" + this.name);
         this.GetComponent<Image>().sprite = background;
     }
@@ -25,7 +25,7 @@ public class BG_Switch : MonoBehaviour
     {
         Debug.Log(this.name);
 
-
+        bg = GameObject.Find("background");
         bg.GetComponent<SpriteRenderer>().sprite = background;
     }
 }
