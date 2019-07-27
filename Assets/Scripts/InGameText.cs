@@ -8,7 +8,7 @@ public class InGameText : MonoBehaviour
    
     public Text idText;
     public Text inputText;
-    public static Text t;
+    public static InputField t;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,9 +27,42 @@ public class InGameText : MonoBehaviour
 
     void InitText()
     {
-        t = GetComponent<Text>();
+        t = GetComponent<InputField>();
         t.text="test dlksfhljdshl jdhs";
-        inputText.text = t.text;
+        t.placeholder.GetComponent<Text>().text = t.text;
+       // inputText.text = t.text;
+    }
+
+    void ReadText()
+    {
+        int line = 1;
+        StreamReader streamReader = new StreamReader("Assets/GameLoad/test.csv");
+
+        bool EndOfFile = false;
+        while (!EndOfFile)
+        {
+
+            string data_string = streamReader.ReadLine();
+            if (data_string == null)
+            {
+
+                EndOfFile = true;
+                break;
+
+            }
+
+            if (line != 1)
+            {
+                string[] data_value = data_string.Split(',');
+
+                int SceneID = int.Parse(data_value[0]);
+                int PageID = int.Parse(data_value[2]);
+                string diaglogueText = data_value[3];
+
+            }
+            line++;
+
+        }
     }
 
 }
