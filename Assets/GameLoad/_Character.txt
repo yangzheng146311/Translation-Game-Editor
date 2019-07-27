@@ -1,0 +1,5 @@
+PageID,CharacterName,Pos_X,Pos_Y,Scale,Hat,Head,Body,Leg
+1,character_2,-7.151935,-2.68129,2.2,RobotHeadset,SamuraiHead,DetectiveBody,SamuraiLegs
+1,character_3,4.622258,-2.036129,2.2,SamuraiHeadband,SamuraiHead,FootballerBody,SamuraiLegs
+2,character_0,-7.313225,-2.882904,2.2,DetectiveHat,KnightHead,KnightBody,DetectiveLegs
+2,character_1,5.590001,-2.479678,2.2,KnightHelmet,FootballerHead,DetectiveBody,FootballerLegs
