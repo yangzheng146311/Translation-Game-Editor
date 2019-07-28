@@ -9,6 +9,7 @@ public class GameLoadManager : MonoBehaviour
     string backgroundFile;
     string objectsFile;
     string characterFile;
+    string textFile;
 
 
     GameObject Scene;
@@ -17,7 +18,7 @@ public class GameLoadManager : MonoBehaviour
     GameObject Tobject;
     GameObject Tcharacter;
 
-
+    Dictionary<int, List<string>> textListDic;
 
 
     // Start is called before the first frame update
@@ -26,6 +27,7 @@ public class GameLoadManager : MonoBehaviour
         backgroundFile = "Assets/GameLoad/_Background.txt";
         objectsFile = "Assets/GameLoad/_Obj.txt";
         characterFile = "Assets/GameLoad/_Character.txt";
+        textFile = "Assets/GameLoad/_ingametext.txt";
 
         Scene = GameObject.Find("Scene");
         Tpage = GameObject.Find("Page_1");
@@ -37,6 +39,7 @@ public class GameLoadManager : MonoBehaviour
         LoadBackground(backgroundFile);
         LoadObjects(objectsFile);
         LoadCharacters(characterFile);
+        LoadText(textFile);
     }
 
     private void LoadCharacters(string fileName)
@@ -175,6 +178,62 @@ public class GameLoadManager : MonoBehaviour
         }
     }
 
+    private void LoadText(string fileName)
+    {
+        textListDic = new Dictionary<int, List<string>>();
+        int line = 1;
+        StreamReader streamReader = new StreamReader(@fileName);
+
+        bool EndOfFile = false;
+        while (!EndOfFile)
+        {
+
+            string data_string = streamReader.ReadLine();
+            if (data_string == null)
+            {
+
+                EndOfFile = true;
+                break;
+
+            }
+
+            if (line != 1)
+            {
+                string[] data_value = data_string.Split(',');
+
+                int pageID = int.Parse(data_value[0]);
+                int textID= int.Parse(data_value[1]);
+                string text = data_value[2];
+
+                if(textListDic.ContainsKey(pageID))
+                {
+
+                    textListDic[pageID].Add(text);
+
+                }
+                
+                else
+                {
+                    List<string> textList = new List<string>();
+                    textListDic.Add(pageID, textList);
+                    textListDic[pageID].Add(text);
+                }
+            }
+            line++;
+        }
+
+        foreach(var x in textListDic)
+        {
+            for (int i = 0; i<x.Value.Count ; i++)
+            {
+                Debug.Log(string.Format("{0}.{1} {2}", x.Key, i, x.Value[i]));
+            }
+
+        }
+
+
+
+    }
 
     void GeneratePages(string fileName)
     {

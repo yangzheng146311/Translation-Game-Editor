@@ -16,23 +16,32 @@ public class EditManager : MonoBehaviour
     private GameObject Tpage;
     private GameObject TpageImage;
     public List<GameObject> pageList;
-  
+
+    public GameObject textCreatorList;
+    GameObject Ttextcreator;
+    List<List<string>> sceneTextList;
+    int curPageIndex;
     
     // Start is called before the first frame update
     void Start()
     {
 
 
-
+        curPageIndex = 0;
         Tpage = GameObject.Find("Page_1");
         sceneObjects = new Dictionary<string, GameObject>();
         objTypes = new Dictionary<string, int>();
         spriteDic = new Dictionary<string, Sprite>();
         pageList = new List<GameObject>();
         pageList.Add(Tpage);
+
+        sceneTextList = new List<List<string>>();
+        List<string> textList = new List<string>();
+        sceneTextList.Add(textList);
+        Ttextcreator = Resources.Load<GameObject>("Prefabs/TextCreator");
         
 
-      
+
         Sprite[] sprites = Resources.LoadAll<Sprite>("Art assets/Objects art");
         foreach(Sprite s in sprites)
         {
@@ -58,6 +67,11 @@ public class EditManager : MonoBehaviour
     {
 
         RefreshPagesID();
+        RefreshTextList();
+
+        //Debug.Log("textListCount:"+sceneTextList.Count);
+        //Debug.Log(curPageIndex);
+        //Debug.Log("textCount:" + sceneTextList[curPageIndex-1].Count);
 
     }
 
@@ -78,13 +92,16 @@ public class EditManager : MonoBehaviour
         renderer.sprite = spriteDic[spriteName];
         obj.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
 
+
+
+        //if the object is not exist,is a new object type else add the amount of relevant type 
         if(objTypes.ContainsKey(spriteName)==false)
         {
             objTypes.Add(spriteName, 0);      
         }
         else
         {
-            objTypes[spriteName] += 1;
+            objTypes[spriteName] += 1;         
         }
         obj.name = spriteName + "_" + objTypes[spriteName];
         sceneObjects.Add(obj.name, obj);
@@ -160,12 +177,18 @@ public class EditManager : MonoBehaviour
         string bgfileName = "Assets/GameLoad/_Background.txt";
         string objfileName = "Assets/GameLoad/_Obj.txt";
         string charcfileName = "Assets/GameLoad/_Character.txt";
+        string inGameTextFileName= "Assets/GameLoad/_ingametext.txt";
 
         GameObject Scene = GameObject.Find("Scene");
 
         bool bBackground = false;
         bool bObject = false;
         bool bCharacter = false;
+        bool btext = false;
+        File.WriteAllText(@bgfileName, string.Empty);
+        File.WriteAllText(@objfileName, string.Empty);
+        File.WriteAllText(@charcfileName, string.Empty);
+        File.WriteAllText(@inGameTextFileName, string.Empty);
         for (int i = 0; i < Scene.transform.childCount; i++)
         {
             GameObject page = Scene.transform.GetChild(i).gameObject;
@@ -173,23 +196,30 @@ public class EditManager : MonoBehaviour
             GameObject backgroundObj = page.transform.Find("background").gameObject;
             GameObject objects = page.transform.Find("Objects").gameObject;
             GameObject characters = page.transform.Find("Characters").gameObject;
-
+           
             int pageIndex = i + 1;
+
+
+
             try
             {
                 using (System.IO.StreamWriter file = new StreamWriter(@bgfileName, true))
                 {
+                    //File.WriteAllText(@bgfileName, string.Empty);
                     if (bBackground == false)
                     {
+                        
                         file.WriteLine("PageID" + ',' + "Background");
                         bBackground = true;
                     }
                     string backgroundName = backgroundObj.transform.GetComponent<SpriteRenderer>().sprite.name;
                     file.WriteLine(pageIndex.ToString() + ',' + backgroundName);
+                    
                 }
 
                 using (System.IO.StreamWriter file = new StreamWriter(@objfileName, true))
                 {
+                    //File.WriteAllText(@objfileName, string.Empty);
                     if (bObject == false)
                     {
                         file.WriteLine("PageID" + ',' + "ObjectName" + ',' + "SpriteName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale");
@@ -212,6 +242,7 @@ public class EditManager : MonoBehaviour
 
                 using (System.IO.StreamWriter file = new StreamWriter(@charcfileName, true))
                 {
+                    //File.WriteAllText(@charcfileName, string.Empty);
                     if (bCharacter == false)
                     {
                         file.WriteLine("PageID" + ',' + "CharacterName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale" + ',' + "Hat" + ',' + "Head" + ',' + "Body" + ',' + "Leg");
@@ -238,6 +269,8 @@ public class EditManager : MonoBehaviour
 
 
                 }
+
+                
             }
             catch (Exception ex)
             {
@@ -248,6 +281,40 @@ public class EditManager : MonoBehaviour
         }
 
 
+        try
+        {
+
+            using (System.IO.StreamWriter file = new StreamWriter(@inGameTextFileName, true))
+            {
+                //File.WriteAllText(@charcfileName, string.Empty);
+                if (btext == false)
+                {
+                    file.WriteLine("PageID" + ',' + "TextID" + ',' + "OriginText");
+                    btext = true;
+                }
+
+                for (int k = 0; k < sceneTextList.Count; k++)
+                {
+                    for (int j = 0; j < sceneTextList[k].Count; j++)
+                    {
+
+                        int pageID = k + 1;
+                        int textID = j + 1;
+                        string text = sceneTextList[k][j];
+                        file.WriteLine(pageID.ToString() + ',' + textID.ToString() + ',' + text);
+
+                    }
+                }
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            throw new ApplicationException("error:", ex);
+
+        }
 
 
 
@@ -287,7 +354,8 @@ public class EditManager : MonoBehaviour
         ShowPageImageList();
         ShowPage(page.name);
 
-        
+        List<string> textList = new List<string>();
+        sceneTextList.Add(textList);
 
     }
 
@@ -303,9 +371,14 @@ public class EditManager : MonoBehaviour
         ShowPage(lastPage.name);
         ShowPageImageList();
 
+        int deletePageIndex = int.Parse(name.Substring(name.Length - 1));
+        List<string> deleteTextList = sceneTextList[deletePageIndex];
+        sceneTextList.Remove(deleteTextList);
+        deleteTextList.Clear();
         
-      
-        RefreshPagesID();
+
+
+
 
     }
 
@@ -328,6 +401,8 @@ public class EditManager : MonoBehaviour
             {
 
                 g.SetActive(true);
+              
+                
 
             }
         }
@@ -411,10 +486,17 @@ public class EditManager : MonoBehaviour
             int index = i + 1;
             scene.transform.GetChild(i).name = "Page_" + index.ToString();
 
+
+            if (scene.transform.GetChild(i).gameObject.activeSelf==true)
+            {
+
+
+                curPageIndex = int.Parse(scene.transform.GetChild(i).name.Substring(scene.transform.GetChild(i).name.Length - 1));
+               
+
+            }
+
         }
-
-
-
 
     }
 
@@ -432,14 +514,70 @@ public class EditManager : MonoBehaviour
             page.background = curPage.transform.Find("background").GetComponent<SpriteRenderer>().sprite.name;
             game.pages.Add(page);
         }
-
-
-
-
-
         return game;
+    }
+    
+
+    public void AddTextCreator()
+    {
+
+        RectTransform rt = textCreatorList.transform.parent.GetComponent<RectTransform>();
+        float height = rt.rect.height;
+        rt.sizeDelta = new Vector2(0, height+200);
+        GameObject t=Instantiate(Ttextcreator,textCreatorList.transform);
+        t.transform.Find("TextID").GetComponent<Text>().text = textCreatorList.transform.childCount.ToString() + ".";
+       
+       
+    }
+
+    void RefreshTextList()
+    {
+        if (textCreatorList.activeSelf==true)
+        {
+            for (int i = 0; i < textCreatorList.transform.childCount; i++)
+            {
+                textCreatorList.transform.GetChild(i).name = "TextCreator_" + (i + 1);
+                textCreatorList.transform.GetChild(i).Find("TextID").GetComponent<Text>().text = (i + 1).ToString();
+
+            }
+        }
+
+    }
+
+    public void SavePageText()
+    {
+        int pageIndex = curPageIndex;
+        sceneTextList[pageIndex - 1].Clear();
+        for (int i = 0; i < textCreatorList.transform.childCount; i++)
+        {
+            string text = textCreatorList.transform.GetChild(i).Find("TextCreatorInput").GetComponent<InputField>().text;
+            
+            sceneTextList[pageIndex - 1].Add(text);
+        }
+    }
+
+    public void LoadPageText()
+    {
+        for (int i = 0; i < textCreatorList.transform.childCount; i++)
+        {
+            Destroy(textCreatorList.transform.GetChild(i).gameObject);
+        }
+
+        int pageIndex = curPageIndex;
 
 
+        if(sceneTextList[pageIndex - 1].Count==0)
+            Instantiate(Ttextcreator, textCreatorList.transform);
 
+        for (int i = 0; i < sceneTextList[pageIndex - 1].Count; i++)
+        {
+            RectTransform rt = textCreatorList.transform.parent.GetComponent<RectTransform>();
+            float height = rt.rect.height;
+            rt.sizeDelta = new Vector2(0, height + 200);
+            GameObject t = Instantiate(Ttextcreator, textCreatorList.transform);
+          
+           
+            t.transform.Find("TextCreatorInput").GetComponent<InputField>().text = sceneTextList[pageIndex - 1][i];
+        }
     }
 }
