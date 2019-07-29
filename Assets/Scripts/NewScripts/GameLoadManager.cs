@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using UnityEngine.UI;
 
 public class GameLoadManager : MonoBehaviour
 {
@@ -11,12 +12,18 @@ public class GameLoadManager : MonoBehaviour
     string characterFile;
     string textFile;
 
+    int curPageIndex;
+    int curSubtileIndex;
 
     GameObject Scene;
     GameObject Tpage;
 
+    List<GameObject> pageList;
+
     GameObject Tobject;
     GameObject Tcharacter;
+
+    GameObject subtitle;
 
     Dictionary<int, List<string>> textListDic;
 
@@ -31,6 +38,7 @@ public class GameLoadManager : MonoBehaviour
 
         Scene = GameObject.Find("Scene");
         Tpage = GameObject.Find("Page_1");
+        subtitle = GameObject.Find("Subtitle");
 
         Tcharacter = Resources.Load<GameObject>("Prefabs/character_0");
         Tobject = Resources.Load<GameObject>("Prefabs/Football_0");
@@ -40,6 +48,31 @@ public class GameLoadManager : MonoBehaviour
         LoadObjects(objectsFile);
         LoadCharacters(characterFile);
         LoadText(textFile);
+
+
+        pageList = new List<GameObject>();
+
+        for (int i = 0; i < Scene.transform.childCount; i++)
+        {
+            pageList.Add(Scene.transform.GetChild(i).gameObject);
+        }
+
+
+        curPageIndex = 1;
+        curSubtileIndex = 0;
+        try
+        {
+
+            string curtext = textListDic[curPageIndex][curSubtileIndex];
+            subtitle.GetComponent<Text>().text = curtext;
+        }
+        catch (Exception err)
+        {
+            throw err;
+        }
+
+        ShowPage("Page_1");
+        
     }
 
     private void LoadCharacters(string fileName)
@@ -222,17 +255,7 @@ public class GameLoadManager : MonoBehaviour
             line++;
         }
 
-        foreach(var x in textListDic)
-        {
-            for (int i = 0; i<x.Value.Count ; i++)
-            {
-                Debug.Log(string.Format("{0}.{1} {2}", x.Key, i, x.Value[i]));
-            }
-
-        }
-
-
-
+      
     }
 
     void GeneratePages(string fileName)
@@ -271,5 +294,87 @@ public class GameLoadManager : MonoBehaviour
 
             }
         }
+    }
+
+    public void NextSubtitle()
+    {
+
+        if (textListDic.ContainsKey(curPageIndex))
+        {
+            if (curSubtileIndex + 1 <= textListDic[curPageIndex].Count - 1)
+            {
+                curSubtileIndex++;
+                string nexttext = textListDic[curPageIndex][curSubtileIndex];
+
+                if (nexttext != "")
+                    subtitle.GetComponent<Text>().text = nexttext;
+                else
+                    subtitle.GetComponent<Text>().text = "(Slient)";
+            }
+        }
+        else
+        {
+
+            subtitle.GetComponent<Text>().text = "(Current page have no text)";
+        }
+    }
+    public void ShowPage(string pageName)
+    {
+
+        foreach (GameObject g in pageList)
+        {
+
+            if (g.name != pageName)
+            {
+
+                g.SetActive(false);
+            }
+
+            else
+            {
+
+                g.SetActive(true);
+
+            }
+        }
+
+
+    }
+    public void NextPage()
+    {
+         
+        
+
+        if (curPageIndex+1 <= Scene.transform.childCount)
+        {
+            curPageIndex++;
+            curSubtileIndex = 0;
+            ShowPage("Page_" + curPageIndex.ToString());
+
+
+
+            if (textListDic.ContainsKey(curPageIndex))
+            {
+                if (textListDic[curPageIndex].Count > 0)
+                {
+
+                    string nexttext = textListDic[curPageIndex][curSubtileIndex];
+                    if (nexttext != "")
+                        subtitle.GetComponent<Text>().text = nexttext;
+                    else
+                        subtitle.GetComponent<Text>().text = "(Slient)";
+                }
+            }
+            else
+            {
+                subtitle.GetComponent<Text>().text = "(Current page have no text)";
+
+            }
+        }
+
+
+        
+
+
     }
 }

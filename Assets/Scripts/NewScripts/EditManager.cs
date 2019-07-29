@@ -38,6 +38,7 @@ public class EditManager : MonoBehaviour
         sceneTextList = new List<List<string>>();
         List<string> textList = new List<string>();
         sceneTextList.Add(textList);
+       
         Ttextcreator = Resources.Load<GameObject>("Prefabs/TextCreator");
         
 
@@ -356,6 +357,7 @@ public class EditManager : MonoBehaviour
 
         List<string> textList = new List<string>();
         sceneTextList.Add(textList);
+        
 
     }
 
@@ -401,9 +403,7 @@ public class EditManager : MonoBehaviour
             {
 
                 g.SetActive(true);
-              
-                
-
+             
             }
         }
 
