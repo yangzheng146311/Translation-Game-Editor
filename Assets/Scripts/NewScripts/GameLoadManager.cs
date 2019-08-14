@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -24,9 +24,10 @@ public class GameLoadManager : MonoBehaviour
     GameObject Tcharacter;
 
     GameObject subtitle;
+    GameObject inputField;
 
     Dictionary<int, List<string>> textListDic;
-
+    Dictionary<int, List<string>> translateListDic;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +40,8 @@ public class GameLoadManager : MonoBehaviour
         Scene = GameObject.Find("Scene");
         Tpage = GameObject.Find("Page_1");
         subtitle = GameObject.Find("Subtitle");
+        inputField = GameObject.Find("PlayerInput");
+        inputField.gameObject.SetActive(false);
 
         Tcharacter = Resources.Load<GameObject>("Prefabs/character_0");
         Tobject = Resources.Load<GameObject>("Prefabs/Football_0");
@@ -74,6 +77,29 @@ public class GameLoadManager : MonoBehaviour
         ShowPage("Page_1");
         
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (inputField.activeSelf == false)
+            {
+                inputField.GetComponent<InputField>().text = "";
+                inputField.SetActive(true);
+            }
+
+
+            else
+            {
+                inputField.SetActive(false);
+                if(subtitle.GetComponent<Text>().text!="")
+                subtitle.GetComponent<Text>().text = inputField.GetComponent<InputField>().text;
+
+            }
+        }
+    }
+
+
 
     private void LoadCharacters(string fileName)
     {
@@ -214,6 +240,7 @@ public class GameLoadManager : MonoBehaviour
     private void LoadText(string fileName)
     {
         textListDic = new Dictionary<int, List<string>>();
+        translateListDic= new Dictionary<int, List<string>>();
         int line = 1;
         StreamReader streamReader = new StreamReader(@fileName);
 
@@ -242,6 +269,8 @@ public class GameLoadManager : MonoBehaviour
                 {
 
                     textListDic[pageID].Add(text);
+                    
+                    
 
                 }
                 
@@ -250,6 +279,27 @@ public class GameLoadManager : MonoBehaviour
                     List<string> textList = new List<string>();
                     textListDic.Add(pageID, textList);
                     textListDic[pageID].Add(text);
+
+                   
+
+                }
+
+                if (translateListDic.ContainsKey(pageID))
+                {
+
+                    translateListDic[pageID].Add(text);
+                  
+
+
+                }
+
+                else
+                {
+                    List<string> textList = new List<string>();
+                    translateListDic.Add(pageID, textList);
+                    translateListDic[pageID].Add(text);
+
+
                 }
             }
             line++;
@@ -298,6 +348,9 @@ public class GameLoadManager : MonoBehaviour
 
     public void NextSubtitle()
     {
+        string text = subtitle.GetComponent<Text>().text;
+
+        translateListDic[curPageIndex][curSubtileIndex] = text;
 
         if (textListDic.ContainsKey(curPageIndex))
         {
@@ -306,11 +359,26 @@ public class GameLoadManager : MonoBehaviour
                 curSubtileIndex++;
                 string nexttext = textListDic[curPageIndex][curSubtileIndex];
 
+               
+
                 if (nexttext != "")
                     subtitle.GetComponent<Text>().text = nexttext;
                 else
                     subtitle.GetComponent<Text>().text = "(Slient)";
             }
+
+            else
+            {
+
+                if (curPageIndex >= textListDic.Count)
+                {
+                    Debug.Log("End");
+                    ExportTranslationText();
+
+                }
+
+            }
+            
         }
         else
         {
@@ -318,6 +386,13 @@ public class GameLoadManager : MonoBehaviour
             subtitle.GetComponent<Text>().text = "(Current page have no text)";
         }
     }
+
+    public void ReSetSubtitle()
+    {
+
+        subtitle.GetComponent<Text>().text = textListDic[curPageIndex][curSubtileIndex];
+    }
+
     public void ShowPage(string pageName)
     {
 
@@ -340,6 +415,7 @@ public class GameLoadManager : MonoBehaviour
 
 
     }
+
     public void NextPage()
     {
          
@@ -375,6 +451,43 @@ public class GameLoadManager : MonoBehaviour
 
         
 
+
+    }
+
+    public void ExportTranslationText()
+    {
+
+
+
+        string fileName = "Assets/GameExport/_Translation.csv";
+        File.WriteAllText(@fileName, string.Empty);
+
+        try
+        {
+            using (System.IO.StreamWriter file = new StreamWriter(@fileName, true))
+            {
+               file.WriteLine("PageID" + ',' + "TextID" + ','+"SourceText" + ','+"Translation"); ;
+
+                for (int i = 1; i <=translateListDic.Count; i++)
+                {
+
+                    for (int j = 0; j < translateListDic[i].Count; j++)
+                    {
+
+                        file.WriteLine((i).ToString() + ',' + (j+1).ToString() + ',' + textListDic[i][j]  + ',' + translateListDic[i][j]); ;
+                    }
+                }
+               
+            }
+        }
+        catch (Exception ex)
+        {
+
+            throw new ApplicationException("error:", ex);
+
+        }
+
+        Debug.Log("Export Finished");
 
     }
 }
