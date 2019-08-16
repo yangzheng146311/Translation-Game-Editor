@@ -32,6 +32,7 @@ public class MenuEvent : MonoBehaviour
   
     public void LoadTeacherGameList()
     {
+        Debug.Log(Application.persistentDataPath);
         string path = Application.persistentDataPath + "/GameData";
         if (!Directory.Exists(path))
         {
@@ -39,7 +40,7 @@ public class MenuEvent : MonoBehaviour
         }
 
         string[] GameFolders = Directory.GetDirectories(Application.persistentDataPath + "/GameData");
-
+       
         foreach (var s in GameFolders)
         {
 
