@@ -28,6 +28,13 @@ public class GameLoadManager : MonoBehaviour
 
     AudioSource audio;
 
+    GameObject lastBtn;
+    GameObject nextBtn;
+    GameObject subBtn;
+    GameObject lastSubtitleBtn;
+    GameObject nextSubtitleBtn;
+
+
 
     Dictionary<int, List<string>> textListDic;
     Dictionary<int, List<string>> translateListDic;
@@ -50,6 +57,12 @@ public class GameLoadManager : MonoBehaviour
         subtitle = GameObject.Find("Subtitle");
         inputField = GameObject.Find("PlayerInput");
         inputField.gameObject.SetActive(false);
+        lastBtn = GameObject.Find("BtnLastPage");
+        nextBtn = GameObject.Find("BtnNextPage");
+        subBtn = GameObject.Find("BtnSaveAndQuit");
+        nextSubtitleBtn = GameObject.Find("BtnNextSubtile");
+        lastSubtitleBtn = GameObject.Find("BtnLastSubtitle");
+
 
         Tcharacter = Resources.Load<GameObject>("Prefabs/character_0");
         Tobject = Resources.Load<GameObject>("Prefabs/Football_0");
@@ -93,6 +106,9 @@ public class GameLoadManager : MonoBehaviour
 
     private void Update()
     {
+
+        Debug.Log(curPageIndex);
+
         if (Input.GetKeyDown(KeyCode.Return))
         {
             if (inputField.activeSelf == false)
@@ -111,10 +127,96 @@ public class GameLoadManager : MonoBehaviour
             }
         }
         AudioPlay();
-        
+
+        ArrowBtnControl();
+
     }
 
+    private void ArrowBtnControl()
+    {
+        if (curPageIndex == 1&&curPageIndex != pageList.Count)
+        {
+            if (lastBtn.activeSelf == true)
+                lastBtn.SetActive(false);
 
+            if (subBtn.activeSelf == true)
+                subBtn.SetActive(false);
+
+            if (nextBtn.activeSelf == false)
+                nextBtn.SetActive(true);
+        }
+
+        if (curPageIndex == pageList.Count&& curPageIndex !=1)
+        {
+
+            if (nextBtn.activeSelf == true)
+                nextBtn.SetActive(false);
+
+            if (subBtn.activeSelf == false)
+                subBtn.SetActive(true);
+
+            if (lastBtn.activeSelf == false)
+                lastBtn.SetActive(true);
+
+        }
+
+        if(curPageIndex==1&&curPageIndex==pageList.Count)
+        {
+
+            if (lastBtn.activeSelf == true)
+                lastBtn.SetActive(false);
+
+            if (nextBtn.activeSelf == true)
+                nextBtn.SetActive(false);
+
+            if (subBtn.activeSelf == false)
+                subBtn.SetActive(true);
+        }
+
+        if (curPageIndex > 1 && curPageIndex < pageList.Count)
+        {
+            if (lastBtn.activeSelf == false)
+                lastBtn.SetActive(true);
+
+            if (nextBtn.activeSelf == false)
+                nextBtn.SetActive(true);
+
+            if (subBtn.activeSelf == true)
+                subBtn.SetActive(false);
+
+        }
+
+
+        if(curSubtileIndex==0&&curSubtileIndex!= translateListDic[curPageIndex].Count - 1)
+        {
+            if(lastSubtitleBtn.activeSelf==true) lastSubtitleBtn.SetActive(false);
+            if (nextSubtitleBtn.activeSelf ==false)  nextSubtitleBtn.SetActive(true);
+
+        }
+
+        if(curSubtileIndex>0&&curSubtileIndex<translateListDic[curPageIndex].Count-1)
+        {
+            if (lastSubtitleBtn.activeSelf == false) lastSubtitleBtn.SetActive(true);
+            if (nextSubtitleBtn.activeSelf == false) nextSubtitleBtn.SetActive(true);
+
+        }
+
+        if(curSubtileIndex== translateListDic[curPageIndex].Count - 1&&curSubtileIndex!=0)
+        {
+
+            if (lastSubtitleBtn.activeSelf == false) lastSubtitleBtn.SetActive(true);
+            if (nextSubtitleBtn.activeSelf == true) nextSubtitleBtn.SetActive(false);
+        }
+
+        if(curSubtileIndex==0&&curSubtileIndex== translateListDic[curPageIndex].Count - 1)
+        {
+            if (lastSubtitleBtn.activeSelf == true) lastSubtitleBtn.SetActive(false);
+            if (nextSubtitleBtn.activeSelf == true) nextSubtitleBtn.SetActive(false);
+
+        }
+
+
+    }
 
     private void LoadCharacters(string fileName)
     {
@@ -325,7 +427,7 @@ public class GameLoadManager : MonoBehaviour
       
     }
 
-    void GeneratePages(string fileName)
+    private void GeneratePages(string fileName)
     {
         int PageNum = -1;
         StreamReader streamReader = new StreamReader(@fileName);
@@ -371,7 +473,12 @@ public class GameLoadManager : MonoBehaviour
         string text = subtitle.GetComponent<Text>().text;
 
 
-        if (text.Equals("")) return;
+        if (text.Equals(""))
+        {
+            subtitle.GetComponent<Text>().text = "(You need to write down your answer!!!)";
+            return;
+
+        }
 
         translateListDic[curPageIndex][curSubtileIndex] = text;
 
@@ -390,17 +497,17 @@ public class GameLoadManager : MonoBehaviour
                     subtitle.GetComponent<Text>().text = "(Slient)";
             }
 
-            else
-            {
+            //else
+            //{
 
-                if (curPageIndex >= translateListDic.Count)
-                {
-                    Debug.Log("End");
-                    ExportTranslationText();
+            //    if (curPageIndex >= translateListDic.Count)
+            //    {
+            //        Debug.Log("End");
+            //        ExportTranslationText();
 
-                }
+            //    }
 
-            }
+            //}
             
         }
         else
@@ -413,6 +520,13 @@ public class GameLoadManager : MonoBehaviour
     public void LastSubtitle()
     {
         string text = subtitle.GetComponent<Text>().text;
+        if (text.Equals(""))
+        {
+            subtitle.GetComponent<Text>().text = "(You need to write down your answer!!!)";
+            return;
+
+        }
+
 
         translateListDic[curPageIndex][curSubtileIndex] = text;
 
@@ -473,46 +587,17 @@ public class GameLoadManager : MonoBehaviour
 
     }
 
-    public void NextPage()
-    {
-         
-        
-
-        if (curPageIndex+1 <= Scene.transform.childCount)
-        {
-            curPageIndex++;
-            curSubtileIndex = 0;
-            ShowPage("Page_" + curPageIndex.ToString());
-            AudioPlay();
-
-
-            if (translateListDic.ContainsKey(curPageIndex))
-            {
-                if (translateListDic[curPageIndex].Count > 0)
-                {
-
-                    string nexttext = translateListDic[curPageIndex][curSubtileIndex];
-                    if (nexttext != "")
-                        subtitle.GetComponent<Text>().text = nexttext;
-                    else
-                        subtitle.GetComponent<Text>().text = "(Slient)";
-                }
-            }
-            else
-            {
-                subtitle.GetComponent<Text>().text = "(Current page have no text)";
-
-            }
-        }
-
-
-        
-
-
-    }
-
     public void LastPage()
     {
+
+        if (subtitle.GetComponent<Text>().text.Equals(""))
+        {
+            subtitle.GetComponent<Text>().text = "(You need to write down your answer!!!)";
+            return;
+
+        }
+        translateListDic[curPageIndex][curSubtileIndex] = subtitle.GetComponent<Text>().text;
+
         if (curPageIndex - 1 >= 1)
         {
             curPageIndex--;
@@ -543,12 +628,73 @@ public class GameLoadManager : MonoBehaviour
 
     }
 
+    public void NextPage()
+    {
+        if (subtitle.GetComponent<Text>().text.Equals(""))
+        {
+            subtitle.GetComponent<Text>().text = "(You need to write down your answer!!!)";
+            return;
+
+        }
+        translateListDic[curPageIndex][curSubtileIndex] = subtitle.GetComponent<Text>().text;
+
+
+        if (curPageIndex+1 <= Scene.transform.childCount)
+        {
+            curPageIndex++;
+            curSubtileIndex = 0;
+            ShowPage("Page_" + curPageIndex.ToString());
+            AudioPlay();
+
+
+            if (translateListDic.ContainsKey(curPageIndex))
+            {
+                if (translateListDic[curPageIndex].Count > 0)
+                {
+
+                    string nexttext = translateListDic[curPageIndex][curSubtileIndex];
+                    if (nexttext != "")
+                        subtitle.GetComponent<Text>().text = nexttext;
+                    else
+                        subtitle.GetComponent<Text>().text = "(Slient)";
+                }
+            }
+            else
+            {
+                subtitle.GetComponent<Text>().text = "(Current page have no text)";
+
+            }
+        }
+
+
+
+
+
+
+    }
+
+    public void Submit()
+    {
+        string text = subtitle.GetComponent<Text>().text;
+        if (text.Equals(""))
+        {
+            subtitle.GetComponent<Text>().text = "(You need to write down your answer!!!)";
+            return;
+
+        }
+
+
+        translateListDic[curPageIndex][curSubtileIndex] = text;
+        ExportTranslationText();
+    }
+
     public void ExportTranslationText()
     {
+       
+        string fileName = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"/" + loadGameName + "_Translation.csv";
+        Debug.Log(fileName);
 
-
-
-        string fileName = Application.persistentDataPath + "/GameData/" + loadGameName + "_Translation.csv";
+        //string fileName = Application.persistentDataPath + "/GameData/" + loadGameName + "_Translation.csv";
         File.WriteAllText(@fileName, string.Empty);
 
         try
@@ -577,8 +723,8 @@ public class GameLoadManager : MonoBehaviour
         }
 
         Debug.Log("Export Finished");
-      
-        
+
+        System.Diagnostics.Process.Start(fileName);
     }
 
     private void LoadBGM(string musicName)
