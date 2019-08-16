@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameLoadManager : MonoBehaviour
 {
@@ -90,6 +91,8 @@ public class GameLoadManager : MonoBehaviour
         {
 
             string curtext = textListDic[curPageIndex][curSubtileIndex];
+
+            if (curtext == "") curtext = "(Slient)";
             subtitle.GetComponent<Text>().text = curtext;
         }
         catch (Exception err)
@@ -107,7 +110,7 @@ public class GameLoadManager : MonoBehaviour
     private void Update()
     {
 
-        Debug.Log(curPageIndex);
+       
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -265,7 +268,7 @@ public class GameLoadManager : MonoBehaviour
                 obj.transform.Find("Head").GetComponent<SpriteRenderer>().sprite = HeadSprite;
                 obj.transform.Find("Body").GetComponent<SpriteRenderer>().sprite = BodySprite;
                 obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sprite = LegSprite;
-
+                obj.GetComponent<DragableObjects>().enabled = false;
 
             }
             line++;
@@ -310,6 +313,7 @@ public class GameLoadManager : MonoBehaviour
                 obj.transform.position = new Vector3(Pos_X, Pos_Y, Tobject.transform.position.z);
 
                 obj.transform.localScale = new Vector3(1.0f * Scale, 1.0f * Scale, 1.0f * Scale);
+                obj.GetComponent<DragableObjects>().enabled = false;
              
             }
             line++;
@@ -475,6 +479,7 @@ public class GameLoadManager : MonoBehaviour
 
         if (text.Equals(""))
         {
+            
             subtitle.GetComponent<Text>().text = "(You need to write down your answer!!!)";
             return;
 
@@ -560,8 +565,10 @@ public class GameLoadManager : MonoBehaviour
 
     public void ReSetSubtitle()
     {
-
-        subtitle.GetComponent<Text>().text = textListDic[curPageIndex][curSubtileIndex];
+        if (textListDic[curPageIndex][curSubtileIndex] != "")
+            subtitle.GetComponent<Text>().text = textListDic[curPageIndex][curSubtileIndex];
+        else
+            subtitle.GetComponent<Text>().text = "(Slient)";
     }
 
     public void ShowPage(string pageName)
@@ -686,6 +693,9 @@ public class GameLoadManager : MonoBehaviour
 
         translateListDic[curPageIndex][curSubtileIndex] = text;
         ExportTranslationText();
+
+        
+        SceneManager.LoadScene("Entrance");
     }
 
     public void ExportTranslationText()

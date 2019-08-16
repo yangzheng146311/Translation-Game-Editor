@@ -108,6 +108,14 @@ public class MenuEvent : MonoBehaviour
     }
 
 
+    public void Delete()
+    {
+
+
+
+    }
+
+
 
     
 }

@@ -41,6 +41,7 @@ public class EditManager : MonoBehaviour
 
         sceneTextList = new List<List<string>>();
         List<string> textList = new List<string>();
+        textList.Add("");
         sceneTextList.Add(textList);
        
         Ttextcreator = Resources.Load<GameObject>("Prefabs/TextCreator");
@@ -319,6 +320,9 @@ public class EditManager : MonoBehaviour
                         int pageID = k + 1;
                         int textID = j + 1;
                         string text = sceneTextList[k][j];
+
+                        
+
                         file.WriteLine(pageID.ToString() + ',' + textID.ToString() + ',' + text);
 
                     }
@@ -368,7 +372,9 @@ public class EditManager : MonoBehaviour
         ShowPage(page.name);
 
         List<string> textList = new List<string>();
+        textList.Add("");
         sceneTextList.Add(textList);
+        
 
         pageMusicList.Add("");
 
@@ -410,6 +416,11 @@ public class EditManager : MonoBehaviour
 
     public void GoToEntrance()
     {
+        if(GameObject.Find("SoundManager").GetComponent<AudioSource>().isPlaying==true)
+        {
+            GameObject.Find("SoundManager").GetComponent<AudioSource>().Stop();
+        }
+
 
 
         SceneManager.LoadScene("Entrance");

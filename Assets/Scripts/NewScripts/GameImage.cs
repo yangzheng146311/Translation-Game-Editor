@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,7 +23,7 @@ public class GameImage : MonoBehaviour
     {
         string gameName = this.gameObject.name;
 
-        Debug.Log(gameName);
+        
 
         MenuEvent.loadingGameName = gameName;
 
@@ -31,5 +32,15 @@ public class GameImage : MonoBehaviour
 
 
 
+    }
+
+
+    public void DeleteGame()
+    {
+
+        string gameName = this.gameObject.name;
+        string path = Application.persistentDataPath + "/GameData/" + gameName;
+        DirectoryInfo dir = new DirectoryInfo(path);
+        dir.Delete(true);
     }
 }
