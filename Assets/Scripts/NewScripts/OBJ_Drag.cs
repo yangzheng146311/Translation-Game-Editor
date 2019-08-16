@@ -12,6 +12,7 @@ public class OBJ_Drag : MonoBehaviour
     {
         obj_sprite = Resources.Load<Sprite>("Art assets/Objects art(with board)/" + this.name);
         this.GetComponent<Image>().sprite = obj_sprite;
+       // transform.localScale=0.5f*Vector3.one;
     }
 
     // Update is called once per frame
