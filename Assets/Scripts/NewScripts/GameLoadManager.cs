@@ -26,16 +26,24 @@ public class GameLoadManager : MonoBehaviour
     GameObject subtitle;
     GameObject inputField;
 
+    AudioSource audio;
+
+
     Dictionary<int, List<string>> textListDic;
     Dictionary<int, List<string>> translateListDic;
-
+    List<string> musicNameList;
+    string loadGameName;
     // Start is called before the first frame update
     void Start()
     {
-        backgroundFile = "Assets/GameLoad/_Background.txt";
-        objectsFile = "Assets/GameLoad/_Obj.txt";
-        characterFile = "Assets/GameLoad/_Character.txt";
-        textFile = "Assets/GameLoad/_ingametext.txt";
+         loadGameName = MenuEvent.loadingGameName;
+
+        pageList = new List<GameObject>();
+        musicNameList = new List<string>();
+        backgroundFile = Application.persistentDataPath + "/GameData/" + loadGameName+"/_Background.txt";
+        objectsFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_Obj.txt";
+        characterFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_Character.txt";
+        textFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_ingametext.txt";
 
         Scene = GameObject.Find("Scene");
         Tpage = GameObject.Find("Page_1");
@@ -46,6 +54,8 @@ public class GameLoadManager : MonoBehaviour
         Tcharacter = Resources.Load<GameObject>("Prefabs/character_0");
         Tobject = Resources.Load<GameObject>("Prefabs/Football_0");
 
+        audio = gameObject.GetComponent<AudioSource>();
+
         GeneratePages(backgroundFile);
         LoadBackground(backgroundFile);
         LoadObjects(objectsFile);
@@ -53,7 +63,7 @@ public class GameLoadManager : MonoBehaviour
         LoadText(textFile);
 
 
-        pageList = new List<GameObject>();
+
 
         for (int i = 0; i < Scene.transform.childCount; i++)
         {
@@ -75,7 +85,10 @@ public class GameLoadManager : MonoBehaviour
         }
 
         ShowPage("Page_1");
-        
+
+        AudioPlay();
+
+
     }
 
     private void Update()
@@ -92,11 +105,13 @@ public class GameLoadManager : MonoBehaviour
             else
             {
                 inputField.SetActive(false);
-                if(subtitle.GetComponent<Text>().text!="")
+                if(inputField.GetComponent<InputField>().text.Trim()!="")
                 subtitle.GetComponent<Text>().text = inputField.GetComponent<InputField>().text;
 
             }
         }
+        AudioPlay();
+        
     }
 
 
@@ -224,10 +239,12 @@ public class GameLoadManager : MonoBehaviour
 
                 int pageID = int.Parse(data_value[0]);
                 string background = data_value[1];
+                string musicName = data_value[2];
 
                 Sprite sprite = Resources.Load<Sprite>("Art assets/Background art/"+background);
                 Scene.transform.Find("Page_" + pageID.ToString()).Find("background").GetComponent<SpriteRenderer>().sprite = sprite;
 
+                musicNameList.Add(musicName);
 
             }
 
@@ -348,16 +365,22 @@ public class GameLoadManager : MonoBehaviour
 
     public void NextSubtitle()
     {
+        
+
+
         string text = subtitle.GetComponent<Text>().text;
+
+
+        if (text.Equals("")) return;
 
         translateListDic[curPageIndex][curSubtileIndex] = text;
 
         if (textListDic.ContainsKey(curPageIndex))
         {
-            if (curSubtileIndex + 1 <= textListDic[curPageIndex].Count - 1)
+            if (curSubtileIndex + 1 <= translateListDic[curPageIndex].Count - 1)
             {
                 curSubtileIndex++;
-                string nexttext = textListDic[curPageIndex][curSubtileIndex];
+                string nexttext = translateListDic[curPageIndex][curSubtileIndex];
 
                
 
@@ -370,7 +393,7 @@ public class GameLoadManager : MonoBehaviour
             else
             {
 
-                if (curPageIndex >= textListDic.Count)
+                if (curPageIndex >= translateListDic.Count)
                 {
                     Debug.Log("End");
                     ExportTranslationText();
@@ -385,6 +408,40 @@ public class GameLoadManager : MonoBehaviour
 
             subtitle.GetComponent<Text>().text = "(Current page have no text)";
         }
+    }
+
+    public void LastSubtitle()
+    {
+        string text = subtitle.GetComponent<Text>().text;
+
+        translateListDic[curPageIndex][curSubtileIndex] = text;
+
+        if (translateListDic.ContainsKey(curPageIndex))
+        {
+            if (curSubtileIndex - 1 >=0)
+            {
+                curSubtileIndex--;
+                string lasttext = translateListDic[curPageIndex][curSubtileIndex];
+
+
+
+                if (lasttext != "")
+                    subtitle.GetComponent<Text>().text = lasttext;
+                else
+                    subtitle.GetComponent<Text>().text = "(Slient)";
+            }
+            
+
+        }
+        else
+        {
+
+            subtitle.GetComponent<Text>().text = "(Current page have no text)";
+        }
+
+
+
+
     }
 
     public void ReSetSubtitle()
@@ -426,15 +483,15 @@ public class GameLoadManager : MonoBehaviour
             curPageIndex++;
             curSubtileIndex = 0;
             ShowPage("Page_" + curPageIndex.ToString());
+            AudioPlay();
 
 
-
-            if (textListDic.ContainsKey(curPageIndex))
+            if (translateListDic.ContainsKey(curPageIndex))
             {
-                if (textListDic[curPageIndex].Count > 0)
+                if (translateListDic[curPageIndex].Count > 0)
                 {
 
-                    string nexttext = textListDic[curPageIndex][curSubtileIndex];
+                    string nexttext = translateListDic[curPageIndex][curSubtileIndex];
                     if (nexttext != "")
                         subtitle.GetComponent<Text>().text = nexttext;
                     else
@@ -454,12 +511,44 @@ public class GameLoadManager : MonoBehaviour
 
     }
 
+    public void LastPage()
+    {
+        if (curPageIndex - 1 >= 1)
+        {
+            curPageIndex--;
+            curSubtileIndex = 0;
+            ShowPage("Page_" + curPageIndex.ToString());
+            AudioPlay();
+
+
+            if (translateListDic.ContainsKey(curPageIndex))
+            {
+                if (translateListDic[curPageIndex].Count > 0)
+                {
+
+                    string text = translateListDic[curPageIndex][curSubtileIndex];
+                    if (text != "")
+                        subtitle.GetComponent<Text>().text = text;
+                    else
+                        subtitle.GetComponent<Text>().text = "(Slient)";
+                }
+            }
+            else
+            {
+                subtitle.GetComponent<Text>().text = "(Current page have no text)";
+
+            }
+        }
+
+
+    }
+
     public void ExportTranslationText()
     {
 
 
 
-        string fileName = "Assets/GameExport/_Translation.csv";
+        string fileName = Application.persistentDataPath + "/GameData/" + loadGameName + "_Translation.csv";
         File.WriteAllText(@fileName, string.Empty);
 
         try
@@ -488,6 +577,31 @@ public class GameLoadManager : MonoBehaviour
         }
 
         Debug.Log("Export Finished");
+      
+        
+    }
+
+    private void LoadBGM(string musicName)
+    {
+
+        AudioClip clip = Resources.Load<AudioClip>("Audio/" + musicName);
+        audio.clip = clip;
+    }
+
+    private void AudioPlay()
+    {
+
+        string music = musicNameList[curPageIndex - 1];
+
+        LoadBGM(music);
+        if(audio.isPlaying==false)
+        {
+
+            audio.Play();
+
+        }
 
     }
+
+    
 }

@@ -1,3 +1,0 @@
-PageID,Background
-1,justice hall
-2,castle

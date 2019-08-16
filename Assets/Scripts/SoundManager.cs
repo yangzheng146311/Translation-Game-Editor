@@ -31,6 +31,16 @@ public class SoundManager : MonoBehaviour
         efxSource.clip = clip;
 
         efxSource.Play();
+
+        EditManager editManager = EditManager.GetEditManager();
+        editManager.curPageMusicName = clip.name;
+
+
+        editManager.pageMusicList[editManager.curPageIndex-1] = editManager.curPageMusicName;
+       
+
+
+
     }
 
 

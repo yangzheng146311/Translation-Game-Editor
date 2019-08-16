@@ -23,7 +23,7 @@ public class BG_Switch : MonoBehaviour
 
     public void BackGroundSwitch()
     {
-        Debug.Log(this.name);
+        
 
         bg = GameObject.Find("background");
         bg.GetComponent<SpriteRenderer>().sprite = background;

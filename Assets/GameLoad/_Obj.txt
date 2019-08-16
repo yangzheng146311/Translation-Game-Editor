@@ -1,3 +1,0 @@
-PageID,ObjectName,SpriteName,Pos_X,Pos_Y,Scale
-1,Suitcase_0,Suitcase,-1.397763,-2.715654,0.3
-2,Sword_0,Sword,0.3594249,-1.557508,0.3

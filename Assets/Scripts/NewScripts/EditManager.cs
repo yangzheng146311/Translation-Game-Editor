@@ -13,19 +13,23 @@ public class EditManager : MonoBehaviour
     private Dictionary<string, Sprite> spriteDic;
     public Dictionary<string, GameObject> sceneObjects;
     private Dictionary<string, int> objTypes;
+    public List<string> pageMusicList;
     private GameObject Tpage;
     private GameObject TpageImage;
     public List<GameObject> pageList;
-
+   
     public GameObject textCreatorList;
     GameObject Ttextcreator;
     List<List<string>> sceneTextList;
-    int curPageIndex;
-    
+    public int curPageIndex;
+    public string curPageMusicName;
+
+    string gameTitle = "UnNameGame";
+
     // Start is called before the first frame update
     void Start()
     {
-
+        
 
         curPageIndex = 0;
         Tpage = GameObject.Find("Page_1");
@@ -40,8 +44,9 @@ public class EditManager : MonoBehaviour
         sceneTextList.Add(textList);
        
         Ttextcreator = Resources.Load<GameObject>("Prefabs/TextCreator");
-        
 
+        pageMusicList = new List<string>();
+        pageMusicList.Add("");
 
         Sprite[] sprites = Resources.LoadAll<Sprite>("Art assets/Objects art");
         foreach(Sprite s in sprites)
@@ -69,10 +74,9 @@ public class EditManager : MonoBehaviour
 
         RefreshPagesID();
         RefreshTextList();
+        AudioPlay();
 
-        //Debug.Log("textListCount:"+sceneTextList.Count);
-        //Debug.Log(curPageIndex);
-        //Debug.Log("textCount:" + sceneTextList[curPageIndex-1].Count);
+
 
     }
 
@@ -175,10 +179,20 @@ public class EditManager : MonoBehaviour
     public void SavePage()
     {
         Debug.Log("SavePage");
-        string bgfileName = "Assets/GameLoad/_Background.txt";
-        string objfileName = "Assets/GameLoad/_Obj.txt";
-        string charcfileName = "Assets/GameLoad/_Character.txt";
-        string inGameTextFileName= "Assets/GameLoad/_ingametext.txt";
+        if (!Directory.Exists(Application.persistentDataPath + "/GameData/" + gameTitle))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/GameData/" + gameTitle);
+        }
+
+        string GameFilePath = Application.persistentDataPath + "/GameData/" + gameTitle;
+        string bgfileName = GameFilePath + "/_Background.txt";
+        string objfileName = GameFilePath + "/_Obj.txt";
+        string charcfileName = GameFilePath + "/_Character.txt";
+        string inGameTextFileName = GameFilePath + "/_ingametext.txt";
+
+
+      
+
 
         GameObject Scene = GameObject.Find("Scene");
 
@@ -204,20 +218,23 @@ public class EditManager : MonoBehaviour
 
             try
             {
+
+
                 using (System.IO.StreamWriter file = new StreamWriter(@bgfileName, true))
                 {
                     //File.WriteAllText(@bgfileName, string.Empty);
                     if (bBackground == false)
                     {
                         
-                        file.WriteLine("PageID" + ',' + "Background");
+                        file.WriteLine("PageID" + ',' + "Background" + ',' + "BGM");
                         bBackground = true;
                     }
                     string backgroundName = backgroundObj.transform.GetComponent<SpriteRenderer>().sprite.name;
-                    file.WriteLine(pageIndex.ToString() + ',' + backgroundName);
+                    string musicName = pageMusicList[i];
+                    file.WriteLine(pageIndex.ToString() + ',' + backgroundName + ',' + musicName);
                     
                 }
-
+               
                 using (System.IO.StreamWriter file = new StreamWriter(@objfileName, true))
                 {
                     //File.WriteAllText(@objfileName, string.Empty);
@@ -240,7 +257,7 @@ public class EditManager : MonoBehaviour
 
 
                 }
-
+               
                 using (System.IO.StreamWriter file = new StreamWriter(@charcfileName, true))
                 {
                     //File.WriteAllText(@charcfileName, string.Empty);
@@ -284,7 +301,7 @@ public class EditManager : MonoBehaviour
 
         try
         {
-
+            
             using (System.IO.StreamWriter file = new StreamWriter(@inGameTextFileName, true))
             {
                 //File.WriteAllText(@charcfileName, string.Empty);
@@ -336,12 +353,7 @@ public class EditManager : MonoBehaviour
         }
     }
 
-    public void LoadPage()
-    {
-
-        Debug.Log("LoadPage");
-
-    }
+  
     public void NewPage()
     {
         
@@ -357,6 +369,9 @@ public class EditManager : MonoBehaviour
 
         List<string> textList = new List<string>();
         sceneTextList.Add(textList);
+
+        pageMusicList.Add("");
+
         
 
     }
@@ -364,33 +379,48 @@ public class EditManager : MonoBehaviour
 
     public void DestroyPageImage(string name)
     {
-
+        int deletePageIndex = int.Parse(name.Substring(name.Length - 1));
         GameObject deletePage=GameObject.Find("Scene").transform.Find(name).gameObject;
         pageList.Remove(deletePage);
         Destroy(deletePage);
+
         
+        pageMusicList.RemoveAt(deletePageIndex - 1);
         GameObject lastPage = pageList[pageList.Count - 1];
         ShowPage(lastPage.name);
         ShowPageImageList();
 
-        int deletePageIndex = int.Parse(name.Substring(name.Length - 1));
-        List<string> deleteTextList = sceneTextList[deletePageIndex];
+        List<string> deleteTextList = sceneTextList[deletePageIndex-1];
         sceneTextList.Remove(deleteTextList);
         deleteTextList.Clear();
-        
+
+
+       
+       
+       
+
+
+
+
 
 
 
 
     }
 
+    public void GoToEntrance()
+    {
 
+
+        SceneManager.LoadScene("Entrance");
+    }
 
 
     public void ShowPage(string pageName)
     {
+       
 
-        foreach(GameObject g in pageList)
+        foreach (GameObject g in pageList)
         {
 
             if(g.name!=pageName)
@@ -403,53 +433,12 @@ public class EditManager : MonoBehaviour
             {
 
                 g.SetActive(true);
-             
+                
+
             }
         }
-
-
     }
-    public void NewScene()
-    {
-
-       // Scene s = SceneManager.GetSceneByName("GameScene");
-
-        //SceneManager.UnloadScene(SceneManager.GetActiveScene());
-       
-   
-        StartCoroutine(LoadYourAsyncScene());
-        //SceneManager.SetActiveScene(s);
-        //SceneManager.MoveGameObjectToScene(example, s);
-        //Debug.Log(s.path);
-
-        //Debug.Log(s.buildIndex);
-
-
-    }
-
-    IEnumerator LoadYourAsyncScene()
-    {
-        // Set the current Scene to be able to unload it later
-        Scene currentScene = SceneManager.GetActiveScene();
-        GameObject example = Resources.Load<GameObject>("Example");
-        GameObject obj = Instantiate(example);
-        // The Application loads the Scene in the background at the same time as the current Scene.
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
-
-        
-
-        // Wait until the last operation fully loads to return anything
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        // Move the GameObject (you attach this in the Inspector) to the newly loaded Scene
-        SceneManager.MoveGameObjectToScene(obj, SceneManager.GetSceneByName("GameScene"));
-        // Unload the previous Scene
-        SceneManager.UnloadSceneAsync(currentScene);
-    }
-
+  
 
     public void ShowPageImageList()
     {
@@ -492,8 +481,8 @@ public class EditManager : MonoBehaviour
 
 
                 curPageIndex = int.Parse(scene.transform.GetChild(i).name.Substring(scene.transform.GetChild(i).name.Length - 1));
-               
 
+               
             }
 
         }
@@ -554,10 +543,19 @@ public class EditManager : MonoBehaviour
             
             sceneTextList[pageIndex - 1].Add(text);
         }
+
+
+        if (GameObject.Find("TitleInput").GetComponent<InputField>().text.Trim() != "")
+            gameTitle = GameObject.Find("TitleInput").GetComponent<InputField>().text;
+        else
+            gameTitle = "UnNameGame";
+
+        Debug.Log(gameTitle);
     }
 
     public void LoadPageText()
     {
+        GameObject.Find("TextListScollBar").GetComponent<Scrollbar>().value = 1;
         for (int i = 0; i < textCreatorList.transform.childCount; i++)
         {
             Destroy(textCreatorList.transform.GetChild(i).gameObject);
@@ -578,6 +576,44 @@ public class EditManager : MonoBehaviour
           
            
             t.transform.Find("TextCreatorInput").GetComponent<InputField>().text = sceneTextList[pageIndex - 1][i];
+        }
+
+
+       
+    }
+
+    private void AudioPlay()
+    {
+
+
+        if (curPageIndex - 1 <= pageMusicList.Count - 1)
+        {
+            if (pageMusicList[curPageIndex - 1] != "")
+            {
+                curPageMusicName = pageMusicList[curPageIndex - 1];
+
+                AudioSource audio = GameObject.Find("SoundManager").GetComponent<AudioSource>();
+                AudioClip clip = Resources.Load<AudioClip>("Audio/" + pageMusicList[curPageIndex - 1]);
+                audio.clip = clip;
+
+                if (audio.isPlaying == false)
+                    audio.Play();
+
+                //Debug.Log("PageIndex: " + curPageIndex.ToString() + " " + curPageMusicName);
+
+
+            }
+
+            else
+            {
+                AudioSource audio = GameObject.Find("SoundManager").GetComponent<AudioSource>();
+
+                if (audio.isPlaying == true)
+                    audio.Stop();
+
+
+
+            }
         }
     }
 }

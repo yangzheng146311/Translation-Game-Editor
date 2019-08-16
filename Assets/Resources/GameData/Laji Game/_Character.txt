@@ -1,0 +1,2 @@
+PageID,CharacterName,Pos_X,Pos_Y,Scale,Hat,Head,Body,Leg
+1,character_0,-6.111723,-2.286377,2.2,none,RobotHead,SamuraiBody,KnightLegs
