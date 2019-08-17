@@ -21,63 +21,10 @@ public class MenuEvent : MonoBehaviour
     {
 
 
-        LoadTeacherGameList();
-        LoadStudentGameList();
-
+     
         loadingGameName = "";
 
     }
-
-
-  
-    public void LoadTeacherGameList()
-    {
-        Debug.Log(Application.persistentDataPath);
-        string path = Application.persistentDataPath + "/GameData";
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
-        }
-
-        string[] GameFolders = Directory.GetDirectories(Application.persistentDataPath + "/GameData");
-       
-        foreach (var s in GameFolders)
-        {
-
-            string fileName = s;
-            GameObject gameImage = Instantiate(teacherGameImage, TeacherGameList.transform);
-            gameImage.name = s.Split('/')[7].Split('\\')[1];
-            gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
-
-
-
-
-        }
-    }
-
-    public void LoadStudentGameList()
-    {
-        Debug.Log(Application.persistentDataPath + "/GameData");
-        string path = Application.persistentDataPath + "/GameData";
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
-        }
-
-        string[] GameFolders = Directory.GetDirectories(Application.persistentDataPath + "/GameData");
-        foreach (var s in GameFolders)
-        {
-
-            string fileName = s;
-            GameObject gameImage = Instantiate(studentGameImage, StudentGameList.transform);
-            gameImage.name = s.Split('/')[7].Split('\\')[1];
-
-            gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
-
-
-        }
-    }
-
 
     // Start is called before the first frame update
     void Start()
@@ -94,28 +41,78 @@ public class MenuEvent : MonoBehaviour
 
     public void GoToEditor()
     {
-
-
         SceneManager.LoadScene("MainScene");
     }
      
 
     public void ExitTheGame()
     {
-
         Application.Quit();
-
     }
 
-
-    public void Delete()
+    public void LoadTeacherGameList()
     {
 
 
+        for (int i = 0; i < TeacherGameList.transform.childCount; i++)
+        {
+            if (TeacherGameList.GetChild(i).name != "Image")
+                Destroy(TeacherGameList.GetChild(i).gameObject);
+        }
 
+        string path = Application.persistentDataPath + "/GameData";
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        string[] GameFolders = Directory.GetDirectories(Application.persistentDataPath + "/GameData");
+
+        foreach (var s in GameFolders)
+        {
+
+            string fileName = s;
+            GameObject gameImage = Instantiate(teacherGameImage, TeacherGameList.transform);
+            gameImage.name = s.Split('/')[7].Split('\\')[1];
+            gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
+            gameImage.gameObject.SetActive(true);
+        }
+}
+    public void LoadStudentGameList()
+    {
+        for (int i = 0; i < StudentGameList.transform.childCount; i++)
+        {
+            if (StudentGameList.GetChild(i).name != "Image")
+                Destroy(StudentGameList.GetChild(i).gameObject);
+        }
+
+        string path = Application.persistentDataPath + "/GameData";
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        string[] GameFolders = Directory.GetDirectories(Application.persistentDataPath + "/GameData");
+        foreach (var s in GameFolders)
+        {
+            Debug.Log(s);
+
+            string fileName = s;
+            GameObject gameImage = Instantiate(studentGameImage, StudentGameList.transform);
+            gameImage.name = s.Split('/')[7].Split('\\')[1];
+
+            gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
+
+            gameImage.gameObject.SetActive(true);
+
+
+        }
     }
 
-
-
     
+   
+
+
+
+
 }

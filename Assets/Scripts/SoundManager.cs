@@ -20,14 +20,26 @@ public class SoundManager : MonoBehaviour
         else if (instance != this)
              Destroy(gameObject);
 
-        DontDestroyOnLoad(gameObject);
+       // DontDestroyOnLoad(gameObject);
     }
 
 
    
     public void PlaySingle(AudioClip clip)
     {
-      
+
+        if (clip == null)
+        {
+            efxSource.clip = null;
+            efxSource.enabled = false;
+            EditManager editManager1 = EditManager.GetEditManager();
+            editManager1.pageMusicList[editManager1.curPageIndex - 1] = "";
+            return;
+        }
+
+        else
+            efxSource.enabled = true;
+
         efxSource.clip = clip;
 
         efxSource.Play();

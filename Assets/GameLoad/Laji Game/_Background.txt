@@ -1,3 +1,0 @@
-PageID,Background,BGM
-1,future city,Kyoto Night Guitar
-2,noir street,Echo Loop Guitar

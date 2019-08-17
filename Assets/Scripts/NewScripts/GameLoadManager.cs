@@ -345,10 +345,15 @@ public class GameLoadManager : MonoBehaviour
 
                 int pageID = int.Parse(data_value[0]);
                 string background = data_value[1];
-                string musicName = data_value[2];
+
+                string musicName = "";
+                if (data_value[2]!="")
+                 musicName = data_value[2];
 
                 Sprite sprite = Resources.Load<Sprite>("Art assets/Background art/"+background);
                 Scene.transform.Find("Page_" + pageID.ToString()).Find("background").GetComponent<SpriteRenderer>().sprite = sprite;
+
+
 
                 musicNameList.Add(musicName);
 
@@ -388,10 +393,13 @@ public class GameLoadManager : MonoBehaviour
                 int textID= int.Parse(data_value[1]);
                 string text = data_value[2];
 
+                string replace = text.Replace("/", ",");
+
+
                 if(textListDic.ContainsKey(pageID))
                 {
 
-                    textListDic[pageID].Add(text);
+                    textListDic[pageID].Add(replace);
                     
                     
 
@@ -401,16 +409,16 @@ public class GameLoadManager : MonoBehaviour
                 {
                     List<string> textList = new List<string>();
                     textListDic.Add(pageID, textList);
-                    textListDic[pageID].Add(text);
+                    textListDic[pageID].Add(replace);
+                    
 
-                   
 
                 }
 
                 if (translateListDic.ContainsKey(pageID))
                 {
 
-                    translateListDic[pageID].Add(text);
+                    translateListDic[pageID].Add(replace);
                   
 
 
@@ -420,7 +428,7 @@ public class GameLoadManager : MonoBehaviour
                 {
                     List<string> textList = new List<string>();
                     translateListDic.Add(pageID, textList);
-                    translateListDic[pageID].Add(text);
+                    translateListDic[pageID].Add(replace);
 
 
                 }
@@ -719,7 +727,11 @@ public class GameLoadManager : MonoBehaviour
                     for (int j = 0; j < translateListDic[i].Count; j++)
                     {
 
-                        file.WriteLine((i).ToString() + ',' + (j+1).ToString() + ',' + textListDic[i][j]  + ',' + translateListDic[i][j]); ;
+                        string replace_text = textListDic[i][j].Replace(",", "/");
+                        string replace_trans = translateListDic[i][j].Replace(",", "/");
+
+
+                        file.WriteLine((i).ToString() + ',' + (j+1).ToString() + ',' + replace_text + ',' + replace_trans); ;
                     }
                 }
                
@@ -747,15 +759,25 @@ public class GameLoadManager : MonoBehaviour
     private void AudioPlay()
     {
 
-        string music = musicNameList[curPageIndex - 1];
 
-        LoadBGM(music);
-        if(audio.isPlaying==false)
+        int targetMusicIndex = curPageIndex - 1;
+        if (targetMusicIndex >= 0 && targetMusicIndex <= pageList.Count - 1)
         {
 
-            audio.Play();
+            string music = musicNameList[curPageIndex - 1];
 
+            if (music != "")
+            {
+                LoadBGM(music);
+                if (audio.isPlaying == false)
+                {
+
+                    audio.Play();
+
+                }
+            }
         }
+        
 
     }
 

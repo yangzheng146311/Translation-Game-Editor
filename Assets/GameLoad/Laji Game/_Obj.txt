@@ -1,4 +1,0 @@
-PageID,ObjectName,SpriteName,Pos_X,Pos_Y,Scale
-1,Sword_0,Sword,-2.973845,-1.091665,0.3
-2,Suitcase_0,Suitcase,3.726717,-1.242239,0.3
-2,Dog_0,Dog,-5.081886,-1.505745,0.3

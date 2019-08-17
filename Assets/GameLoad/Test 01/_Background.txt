@@ -1,3 +1,0 @@
-PageID,Background,BGM
-1,moutains,Echo Loop Guitar
-2,justice hall,

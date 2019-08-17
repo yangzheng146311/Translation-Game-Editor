@@ -321,9 +321,9 @@ public class EditManager : MonoBehaviour
                         int textID = j + 1;
                         string text = sceneTextList[k][j];
 
-                        
+                        string replace=text.Replace(",", "/");
 
-                        file.WriteLine(pageID.ToString() + ',' + textID.ToString() + ',' + text);
+                        file.WriteLine(pageID.ToString() + ',' + textID.ToString() + ',' + replace);
 
                     }
                 }
@@ -416,13 +416,17 @@ public class EditManager : MonoBehaviour
 
     public void GoToEntrance()
     {
+
+
+        Debug.Log(GameObject.Find("SoundManager").GetComponent<AudioSource>().isPlaying);
+
         if(GameObject.Find("SoundManager").GetComponent<AudioSource>().isPlaying==true)
         {
             GameObject.Find("SoundManager").GetComponent<AudioSource>().Stop();
+            Debug.Log(GameObject.Find("SoundManager").GetComponent<AudioSource>().isPlaying);
         }
 
-
-
+      
         SceneManager.LoadScene("Entrance");
     }
 
