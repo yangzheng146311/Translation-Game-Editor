@@ -1,3 +1,0 @@
-PageID,CharacterName,Pos_X,Pos_Y,Scale,Hat,Head,Body,Leg
-1,character_0,-4.778436,-1.948127,2.2,none,DetectiveHead,SamuraiBody,KnightLegs
-2,character_1,-5.270077,-2.490628,2.2,none,DetectiveHead,FootballerBody,KnightLegs

@@ -1,2 +1,0 @@
-PageID,ObjectName,SpriteName,Pos_X,Pos_Y,Scale
-2,Dog_0,Dog,-3.356725,-2.322584,0.3
