@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: c00e6c044296c65428e5559ceb4ef2c8
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Dalek Pinpoint
+  fontNames:
+  - Dalek Pinpoint
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 0c471c7620adb414ba085451322c5e23, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
