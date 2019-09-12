@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class FR_S4 : MonoBehaviour
+public class FR_S7 : MonoBehaviour
 {
+    public GameObject subtitle;
     public GameObject inputframe;
     public GameObject title;
     public GameObject correctResult;
@@ -15,12 +16,10 @@ public class FR_S4 : MonoBehaviour
     public string[] sourceText;
     public string[] translateText;
     public GameObject background;
-    public GameObject instext;
-    public GameObject sword;
+    
     public GameObject Theseus;
-    public GameObject weapons;
-    public Sprite itemSword;
 
+    public GameObject[] foxes;
 
 
     private int dialogIndex = 0;
@@ -30,7 +29,7 @@ public class FR_S4 : MonoBehaviour
     Action action;
     List<Action> actionList;
 
-
+    bool bEndScene = false;
 
 
     private void Awake()
@@ -63,7 +62,44 @@ public class FR_S4 : MonoBehaviour
     void Update()
     {
         ReplaceTitle();
+
+          if(ifAllFoxesDie()==true)
+        {
+
+
+
+            if(bEndScene==false)
+            {
+
+
+                Debug.Log("EndScene");
+                bEndScene = true;
+            }
+        }
+
+
+
     }
+
+
+    bool ifAllFoxesDie()
+    {
+
+
+        foreach(var f in foxes)
+        {
+
+            if(f.gameObject.GetComponent<Enemy_S7>().curHP>0)
+            {
+                return false;
+
+            }
+        }
+
+        return true;
+    }
+
+
 
     public void ShowInputFrame()
     {
@@ -96,11 +132,6 @@ public class FR_S4 : MonoBehaviour
                         title.SetActive(false);
 
                         correctResult.SetActive(true);
-
-                       
-
-
-
                     }
 
                     else
@@ -116,12 +147,13 @@ public class FR_S4 : MonoBehaviour
                 {
                     if (inputtext.Equals(translateText[1]))
                     {
-                        instext.GetComponent<Text>().text = inputtext;
+                        title.GetComponent<Text>().text = inputtext;
 
-                       
+                        subtitle.transform.Find("Text").GetComponent<Text>().text = inputtext;
+
 
                         inputframe.gameObject.SetActive(false);
-                        title.SetActive(false);
+                       
 
                         correctResult.SetActive(true);
                     }
@@ -130,20 +162,12 @@ public class FR_S4 : MonoBehaviour
                     {
 
                         wrongResult.SetActive(true);
+
+
                     }
                 }
 
-                if(actionIndex==3)
-                {
 
-                    if (inputtext.Equals(translateText[2]))
-                    {
-                        instext.GetComponent<Text>().text = inputtext;
-                        inputframe.gameObject.SetActive(false);
-                        correctResult.SetActive(true);
-                        correctResult.transform.Find("Text").GetComponent<Text>().text = "Level Pass";
-                    }
-                }
 
 
             }
@@ -161,12 +185,16 @@ public class FR_S4 : MonoBehaviour
     {
         Debug.Log("Action_1");
         background.SetActive(true);
-        instext.SetActive(true);
+        
         Theseus.gameObject.SetActive(true);
-        weapons.SetActive(true);
-        sword.SetActive(true);
-        inputframe.SetActive(true);
-        inputframe.GetComponent<InputField>().text = "";
+
+        dialogIndex++;
+        ShowDialog(sourceText[dialogIndex]);
+        
+
+
+
+
 
 
     }
@@ -175,31 +203,33 @@ public class FR_S4 : MonoBehaviour
     private void Action_2()
     {
         Debug.Log("Action_2");
-        Theseus.GetComponent<Character_S4>().canMove = true;
+        inputframe.SetActive(false);
+
+
+        foreach (var f in foxes)
+        {
+
+            if (f.gameObject.activeSelf==false)
+            {
+                f.gameObject.SetActive(true);
+
+            }
+
+            Theseus.GetComponent<Character_S6>().canMove = true;
+        }
+
 
     }
 
 
     private void Action_3()
     {
-        Debug.Log("Action_3");
-        instext.GetComponent<Text>().text = sourceText[dialogIndex];
-
-        GameObject.Find("Weapons").transform.GetChild(0).GetComponent<Image>().sprite = itemSword;
-        //correctResult.SetActive(true);
-
-
-        //correctResult.transform.Find("Text").GetComponent<Text>().text = "Level Pass";
-
-        inputframe.SetActive(true);
-        inputframe.GetComponent<InputField>().text = "";
+       
 
     }
 
     private void Action_4()
     {
-        Debug.Log("Action_4");
-        SceneManager.LoadScene("FR_S5");
 
 
     }
@@ -214,11 +244,16 @@ public class FR_S4 : MonoBehaviour
 
         actionIndex++;
 
-        if(actionIndex!=3)
-        dialogIndex++;
-
         actionList[actionIndex]();
     }
 
 
+    public void ShowDialog(string source)
+    {
+        subtitle.transform.Find("Text").GetComponent<Text>().text = source;
+        inputframe.SetActive(true);
+        subtitle.SetActive(true);
+
+        inputframe.GetComponent<InputField>().text = "";
+    }
 }

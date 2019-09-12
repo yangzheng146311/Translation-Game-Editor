@@ -64,7 +64,8 @@ public class Character_S4 : MonoBehaviour
                 FR_S4 fr_s4 = GameObject.Find("GameManager").GetComponent<FR_S4>();
                 if (fr_s4)
                 {
-                    fr_s4.NextAction();
+
+                   fr_s4.NextAction();
 
                 }
             }

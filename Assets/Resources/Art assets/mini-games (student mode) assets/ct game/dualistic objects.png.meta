@@ -1,7 +1,31 @@
 fileFormatVersion: 2
 guid: 5ad8dcb50b0eed84095f1a73794de31b
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 1618514867080385862
+    second: dualistic objects_0
+  - first:
+      213: -6999644899631585764
+    second: dualistic objects_1
+  - first:
+      213: -7456219170760266906
+    second: dualistic objects_2
+  - first:
+      213: -3849760867670676600
+    second: dualistic objects_3
+  - first:
+      213: -4221149081659168073
+    second: dualistic objects_4
+  - first:
+      213: 6932959854206586839
+    second: dualistic objects_5
+  - first:
+      213: 3544390370296534455
+    second: dualistic objects_6
+  - first:
+      213: -227952507778926979
+    second: dualistic objects_7
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -40,7 +64,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -70,9 +94,201 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: dualistic objects_0
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 874
+        width: 265
+        height: 144
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 377ddd4164a5ace4387257e05090b74a
+      internalID: 1618514867080385862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dualistic objects_1
+      rect:
+        serializedVersion: 2
+        x: 372
+        y: 872
+        width: 224
+        height: 161
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 010ad685c86b64c4dae234ff8bd152be
+      internalID: -6999644899631585764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dualistic objects_2
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 601
+        width: 195
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 895956108f182b94d9881e0a4ee95e12
+      internalID: -7456219170760266906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dualistic objects_3
+      rect:
+        serializedVersion: 2
+        x: 383
+        y: 605
+        width: 160
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79c6b2f6794c6b64cbe9d0c74172d8db
+      internalID: -3849760867670676600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dualistic objects_4
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 364
+        width: 185
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 205f0494afb8c2c4eb64feed1db61bec
+      internalID: -4221149081659168073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dualistic objects_5
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 349
+        width: 162
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08b98bc24e8c9e649a872eed070f3f9d
+      internalID: 6932959854206586839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dualistic objects_6
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 97
+        width: 260
+        height: 151
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1a4f3766fc812244be7b951de8eb9fe
+      internalID: 3544390370296534455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dualistic objects_7
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 30
+        width: 260
+        height: 260
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca55223442a8fa9438668f86e1e3d8ed
+      internalID: -227952507778926979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
