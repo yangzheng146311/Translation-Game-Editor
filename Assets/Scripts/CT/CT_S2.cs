@@ -335,7 +335,7 @@ public class CT_S2 : MonoBehaviour
     }
     public void ENDGame()
     {
-        Application.Quit();
+        Application.Quit(); 
 
     }
 

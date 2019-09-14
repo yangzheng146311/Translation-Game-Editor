@@ -118,9 +118,11 @@ public class PlayerCar : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        if(collision.tag.Equals("Coin"))
-        {
+       
 
+        if (collision.tag.Equals("Coin"))
+        {
+            GameObject.Find("Collect Sound").GetComponent<AudioSource>().Play();
             collision.gameObject.SetActive(false);
             CS_GameManager.GetManager().AddCoin(1);
         }
@@ -159,7 +161,7 @@ public class PlayerCar : MonoBehaviour
 
         if(collision.name.Equals("Cone")|| collision.name.Equals("Bell") || collision.name.Equals("Soil") || collision.name.Equals("Gan"))
         {
-
+            GameObject.Find("Fail Sound").GetComponent<AudioSource>().Play();
             collision.gameObject.SetActive(false);
 
             if(isGod!=true)
@@ -169,14 +171,15 @@ public class PlayerCar : MonoBehaviour
 
         if (collision.name.Equals("Rocket"))
         {
-
+            GameObject.Find("Collect Sound").GetComponent<AudioSource>().Play();
             collision.gameObject.SetActive(false);
             speedTime = 2;
         }
 
         if (collision.name.Equals("Star"))
         {
-
+            GameObject.Find("Collect Sound").GetComponent<AudioSource>().Play();
+           
             collision.gameObject.SetActive(false);
             godTime = 2;
         }

@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +9,8 @@ public class CS_GameManager : MonoBehaviour
 {
     static public CS_GameManager gameManager;
 
+
+    int transID = 0;
     int coins;
     int curLevel;
     public int nextNodeIndex;
@@ -22,7 +26,7 @@ public class CS_GameManager : MonoBehaviour
     Text coinText;
     Text timeText;
     Text levelText;
-
+    public GameObject errorPanel;
 
     public GameObject player;
     public GameObject trackerGroup;
@@ -31,9 +35,25 @@ public class CS_GameManager : MonoBehaviour
     private GameObject levelIntro;
 
 
+    public GameObject[] trans;
+
+    public Sprite[] cars;
+
+    string[] sourceText;
+    string[] transText;
+
+    public string[] sourcewords;
+    public string[] transwords;
+
+
 
     private void Awake()
     {
+        sourceText = new string[18];
+        transText = new string[18];
+
+        transwords = new string[8];
+
         gameManager = new CS_GameManager();
        
 
@@ -47,8 +67,8 @@ public class CS_GameManager : MonoBehaviour
         
 
 
-        gameManager.maxTime = new float[5] { 30.0f, 50.0f, 70.0f, 90.0f, 120.0f };
-        gameManager.targetCoin = new int[5] { 10, 20, 30, 40, 50 };
+        gameManager.maxTime = new float[5] { 60.0f, 80.0f, 100.0f, 120.0f, 150.0f };
+        gameManager.targetCoin = new int[5] { 8, 15, 25, 40, 50 };
         gameManager.levels = new string[5] { "官渡道", "赤壁道", "潼关道", "荆州道", "夷陵道" };
 
 
@@ -71,6 +91,19 @@ public class CS_GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        trans[transID].SetActive(true);
+
+        //sourceText[0] = "游戏简介 东汉末年 朝纲混乱。豪杰并起 人才辈出。文臣武将横空出世 共同守护传奇三国。官渡、赤壁、潼关等地相继陷入失守困境 需有识有勇之士速如流星掣电般破局。  三国竞速共设5道关卡 玩家需要在规定的时间内完成关卡任务 进行通关。随着关卡的进程 玩家会陆续解锁不同的道具。  操作介绍 玩家进入游戏后根据赛道选择赛马进行游戏。在游戏中 玩家需要根据关卡任务提示躲避障碍物 收集奖励道具进行加速。";
+        for (int i = 1; i < trans.Length; i++)
+        {
+            string txt = trans[i].transform.Find("Text").GetComponent<Text>().text.Trim();
+           
+            sourceText[i-1] = txt.Replace(",", " ").Replace("，", " ").Replace("\r", "").Replace("\t", "").Replace("\n", " ").Replace(Environment.NewLine, " ");
+            Debug.Log(sourceText[i-1]);
+
+        }
+
+
         LoadLevel(gameManager.curLevel);
     }
 
@@ -146,7 +179,8 @@ public class CS_GameManager : MonoBehaviour
     public void LoadLevel(int level)
     {
 
-
+        player.GetComponent<SpriteRenderer>().sprite = cars[level-1];
+        player.transform.Rotate(0, 0, (player.transform.eulerAngles.z-180)*-1);
 
         gameManager.successResult.SetActive(false);
         gameManager.failResult.SetActive(false);
@@ -182,6 +216,11 @@ public class CS_GameManager : MonoBehaviour
     {
         gameManager.bGameStop = false;
     }
+
+
+
+
+
 
     public void EndGame()
     {
@@ -242,6 +281,10 @@ public class CS_GameManager : MonoBehaviour
 
     public void LevelPass()
     {
+
+        GameObject.Find("Success Sound").GetComponent<AudioSource>().Play();
+
+
         Debug.Log("Win");
 
         gameManager.successResult.SetActive(true);
@@ -253,13 +296,18 @@ public class CS_GameManager : MonoBehaviour
         {
             gameManager.successResult.transform.Find("Text").GetComponent<Text>().text = "恭喜！您已成功守护所有关卡，请领取您的终极通关奖励。欢迎继续挑战，三国再见！";
             gameManager.successResult.transform.Find("OkBtn").gameObject.SetActive(false);
+
+           
+
         }
 
     }
 
+    
 
     public void LevelFail()
     {
+        GameObject.Find("Fail Sound").GetComponent<AudioSource>().Play();
         Debug.Log("Lose");
         gameManager.failResult.SetActive(true);
         gameManager.failResult.SetActive(true);
@@ -287,7 +335,7 @@ public class CS_GameManager : MonoBehaviour
     {
         int curLevel = gameManager.curLevel;
 
-        LoadLevel(curLevel - 1);
+        LoadLevel(curLevel);
 
 
     }
@@ -325,6 +373,118 @@ public class CS_GameManager : MonoBehaviour
 
         Application.Quit();
 
+    }
+
+    public void ShowNextTrans()
+    {
+        
+
+        if(transID==0)
+        {
+
+            for (int i = 0; i < 8; i++)
+            {
+                if(trans[0].transform.Find("Text_" + i.ToString()).Find("InputField").GetComponent<InputField>().text=="")
+                {
+                    errorPanel.SetActive(true);
+                    return;
+
+                }
+
+
+
+                transwords[i] = trans[0].transform.Find("Text_" + i.ToString()).Find("InputField").GetComponent<InputField>().text;
+
+                Debug.Log(transwords[i]);
+            }
+
+
+        }
+
+        else
+        {
+            string txt = trans[transID].transform.Find("InputField").GetComponent<InputField>().text;
+            if(txt=="")
+            {
+
+                errorPanel.SetActive(true);
+                return;
+            }
+
+            transText[transID-1] = txt.Trim().Replace(",", " ").Replace("，", " ").Replace("\r", "").Replace("\t", "").Replace("\n", " ").Replace(Environment.NewLine, " ");
+            Debug.Log(transText[transID]);
+
+
+
+
+        }
+
+
+
+
+
+
+        trans[transID].SetActive(false);
+
+
+
+
+
+
+
+
+        if (transID != trans.Length - 1)
+        {
+            transID++;
+            trans[transID].SetActive(true);
+        }
+
+        else
+        {
+
+
+            ExportText();
+        }
+
+        
+
+    }
+
+    public void ExportText()
+    {
+        string fileName = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "/" + "CS_GAME" + "_Translation.csv";
+        Debug.Log(fileName);
+
+        //string fileName = Application.persistentDataPath + "/GameData/" + loadGameName + "_Translation.csv";
+        File.WriteAllText(@fileName, string.Empty);
+
+        File.AppendAllText(@fileName, "Simplified Chinese" + ',' + "Translation Text" + Environment.NewLine, System.Text.Encoding.UTF8);
+        try
+        {
+
+            for (int i = 0; i < 8; i++)
+            {
+                File.AppendAllText(@fileName, sourcewords[i].Replace(",", " ").Replace("，", " ").Replace("\r", "").Replace("\t", "").Replace("\n", " ").Replace(Environment.NewLine, " ") + ',' + transwords[i].Replace(",", " ").Replace("，", " ").Replace("\r", "").Replace("\t", "").Replace("\n", " ").Replace(Environment.NewLine, " ") + Environment.NewLine, System.Text.Encoding.UTF8);
+            }
+
+
+
+            for (int i = 0; i < 18; i++)
+            {
+                File.AppendAllText(@fileName, sourceText[i] + ',' + transText[i] + Environment.NewLine, System.Text.Encoding.UTF8);
+            }
+
+           
+        }
+
+        catch (Exception err)
+        {
+            Debug.Log(err);
+        }
+
+        Debug.Log("Export Finished");
+
+        System.Diagnostics.Process.Start(fileName);
     }
 }
 
