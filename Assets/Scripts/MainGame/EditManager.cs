@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using System.IO;
+using UnityEditor;
 
 public class EditManager : MonoBehaviour
 {
@@ -17,7 +18,10 @@ public class EditManager : MonoBehaviour
     private GameObject Tpage;
     private GameObject TpageImage;
     public List<GameObject> pageList;
-   
+
+    private Dictionary<string,AudioClip> tempMusicList;
+
+
     public GameObject textCreatorList;
     GameObject Ttextcreator;
     List<List<string>> sceneTextList;
@@ -26,6 +30,8 @@ public class EditManager : MonoBehaviour
 
     string gameTitle = "UnNameGame";
 
+
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +49,8 @@ public class EditManager : MonoBehaviour
         List<string> textList = new List<string>();
         textList.Add("");
         sceneTextList.Add(textList);
+
+        tempMusicList = new Dictionary<string, AudioClip>();
        
         Ttextcreator = Resources.Load<GameObject>("Prefabs/TextCreator");
 
@@ -73,13 +81,16 @@ public class EditManager : MonoBehaviour
     void Update()
     {
 
+
+       // Debug.Log(GameObject.Find("SoundManager").GetComponent<AudioSource>().isPlaying);
+
         RefreshPagesID();
         RefreshTextList();
         AudioPlay();
 
 
 
-    }
+    } 
 
     static public EditManager GetEditManager()
     {
@@ -113,6 +124,7 @@ public class EditManager : MonoBehaviour
         sceneObjects.Add(obj.name, obj);
         obj.AddComponent<BoxCollider2D>();
         obj.AddComponent<DragableObjects>();
+        
         obj.transform.SetParent(GameObject.Find("Objects").transform);
         return obj;
     }
@@ -609,6 +621,15 @@ public class EditManager : MonoBehaviour
 
                 AudioSource audio = GameObject.Find("SoundManager").GetComponent<AudioSource>();
                 AudioClip clip = Resources.Load<AudioClip>("Audio/" + pageMusicList[curPageIndex - 1]);
+
+                if(!clip)
+                {
+
+                    clip = tempMusicList[curPageMusicName];
+
+                }
+
+
                 audio.clip = clip;
 
                 if (audio.isPlaying == false)
@@ -630,5 +651,144 @@ public class EditManager : MonoBehaviour
 
             }
         }
+    }
+
+
+    public void OpenImageFileBrowser()
+    {
+
+        string path=EditorUtility.OpenFilePanel("Select Image","",  "jpg, jpeg");
+
+
+        if (path !="")
+        {
+            string fileName = (path.Split('/')[path.Split('/').Length - 1]);
+
+            byte[] fileData = getImageByte(path); // ERROR: The name 'File' does not exist in the current context?
+            Texture2D t2d = new Texture2D(2, 2);
+            //根据路劲读取字节流再转换成图片形式
+            t2d.LoadImage(fileData);
+
+
+            Sprite sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
+            sprite.name = fileName.Split('.')[0];
+            
+
+            GameObject.Find("background").GetComponent<SpriteRenderer>().sprite = sprite;
+            GameObject.Find("background").GetComponent<FullScreenSprite>().Fit();
+
+
+
+            if (!Directory.Exists(Application.persistentDataPath + "/GameResources/" + "GameImage"))
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/GameResources/" + "GameImage");
+            }
+
+            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/" + "GameImage";
+            string igfileName = ExternalImageFilePath + "/" + fileName;
+
+            if (!File.Exists(igfileName))
+            {
+                System.IO.File.Copy(path, igfileName);
+            }
+        }
+    }
+
+    private static byte[] getImageByte(string imagePath)
+    {
+        //读取到文件
+        FileStream files = new FileStream(imagePath, FileMode.Open);
+        //新建比特流对象
+        byte[] imgByte = new byte[files.Length];
+        //将文件写入对应比特流对象
+        files.Read(imgByte, 0, imgByte.Length);
+        //关闭文件
+        files.Close();
+        //返回比特流的值
+        return imgByte;
+    }
+
+
+
+    public void OpenMusicFileBrowser()
+    {
+
+        string path = EditorUtility.OpenFilePanel("Select Music", "", "mp3,wav,wma");
+        string audioName = path.Split('/')[path.Split('/').Length - 1];
+
+        if (path != "")
+        {
+            Debug.Log(path);
+
+            if (!Directory.Exists(Application.persistentDataPath + "/GameResources/" + "GameMusic"))
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/GameResources/" + "GameMusic");
+            }
+
+            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/" + "GameMusic";
+            string igfileName = ExternalImageFilePath + "/" + audioName;
+
+            if (!File.Exists(igfileName))
+            {
+                System.IO.File.Copy(path, igfileName);
+            }
+
+            string formatPath = string.Format("file://{0}", path);
+
+
+            StartCoroutine(LoadAuido(formatPath));
+           
+
+        }
+
+
+       
+    }
+
+    private IEnumerator LoadAuido(string audiopath)
+    {
+
+
+
+
+
+        string audioName = audiopath.Split('/')[audiopath.Split('/').Length - 1];
+
+        WWW request = GetAudioFromFile(audiopath);
+        yield return request;
+
+        AudioClip audioClip = NAudioPlayer.FromMp3Data(request.bytes);
+
+        
+        audioClip.name = audioName;
+
+
+        if (!tempMusicList.ContainsKey(audioName))
+        {
+
+            tempMusicList.Add(audioName, audioClip);
+        }
+
+
+        pageMusicList[curPageIndex - 1] = audioClip.name;
+
+        if(GameObject.Find("SoundManager").GetComponent<AudioSource>().enabled==false)
+        {
+
+            GameObject.Find("SoundManager").GetComponent<AudioSource>().enabled = true;
+        }
+        //GameObject.Find("SoundManager").GetComponent<AudioSource>().clip = audioClip;
+        //GameObject.Find("SoundManager").GetComponent<AudioSource>().Play();
+
+
+
+
+
+    }
+
+    private WWW GetAudioFromFile(string audiopath)
+    {
+        WWW reqeust = new WWW(audiopath);
+        return reqeust;
     }
 }

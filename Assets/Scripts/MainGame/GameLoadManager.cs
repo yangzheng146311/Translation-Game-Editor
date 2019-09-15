@@ -27,7 +27,7 @@ public class GameLoadManager : MonoBehaviour
     GameObject subtitle;
     GameObject inputField;
 
-    AudioSource audio;
+    AudioSource myaudio;
 
     GameObject lastBtn;
     GameObject nextBtn;
@@ -35,6 +35,7 @@ public class GameLoadManager : MonoBehaviour
     GameObject lastSubtitleBtn;
     GameObject nextSubtitleBtn;
 
+   List<AudioClip> audioList;
 
 
     Dictionary<int, List<string>> textListDic;
@@ -48,6 +49,7 @@ public class GameLoadManager : MonoBehaviour
 
         pageList = new List<GameObject>();
         musicNameList = new List<string>();
+        audioList = new List<AudioClip>();
         backgroundFile = Application.persistentDataPath + "/GameData/" + loadGameName+"/_Background.txt";
         objectsFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_Obj.txt";
         characterFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_Character.txt";
@@ -68,7 +70,7 @@ public class GameLoadManager : MonoBehaviour
         Tcharacter = Resources.Load<GameObject>("Prefabs/character_0");
         Tobject = Resources.Load<GameObject>("Prefabs/Football_0");
 
-        audio = gameObject.GetComponent<AudioSource>();
+        myaudio = gameObject.GetComponent<AudioSource>();
 
         GeneratePages(backgroundFile);
         LoadBackground(backgroundFile);
@@ -102,7 +104,7 @@ public class GameLoadManager : MonoBehaviour
 
         ShowPage("Page_1");
 
-        AudioPlay();
+        //AudioPlay();
 
 
     }
@@ -351,11 +353,25 @@ public class GameLoadManager : MonoBehaviour
                  musicName = data_value[2];
 
                 Sprite sprite = Resources.Load<Sprite>("Art assets/Background art/"+background);
+
+                if(!sprite)
+                {
+                    string folderpath = Application.persistentDataPath + "/GameResources/GameImage/";
+                    string igFileName = folderpath + background+".jpg";
+                    byte[] fileData = getImageByte(igFileName);
+                    Texture2D t2d = new Texture2D(2, 2);
+                    //根据路劲读取字节流再转换成图片形式
+                    t2d.LoadImage(fileData);
+                    sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
+                    sprite.name = background;
+                }
+
                 Scene.transform.Find("Page_" + pageID.ToString()).Find("background").GetComponent<SpriteRenderer>().sprite = sprite;
 
-
+                Scene.transform.Find("Page_" + pageID.ToString()).Find("background").GetComponent<FullScreenSprite>().Fit();
 
                 musicNameList.Add(musicName);
+                LoadBGM(musicName);
 
             }
 
@@ -582,6 +598,9 @@ public class GameLoadManager : MonoBehaviour
     public void ShowPage(string pageName)
     {
 
+
+        myaudio.clip = null;
+
         foreach (GameObject g in pageList)
         {
 
@@ -618,7 +637,7 @@ public class GameLoadManager : MonoBehaviour
             curPageIndex--;
             curSubtileIndex = 0;
             ShowPage("Page_" + curPageIndex.ToString());
-            AudioPlay();
+            //AudioPlay();
 
 
             if (translateListDic.ContainsKey(curPageIndex))
@@ -659,7 +678,7 @@ public class GameLoadManager : MonoBehaviour
             curPageIndex++;
             curSubtileIndex = 0;
             ShowPage("Page_" + curPageIndex.ToString());
-            AudioPlay();
+            //AudioPlay();
 
 
             if (translateListDic.ContainsKey(curPageIndex))
@@ -753,33 +772,127 @@ public class GameLoadManager : MonoBehaviour
     {
 
         AudioClip clip = Resources.Load<AudioClip>("Audio/" + musicName);
-        audio.clip = clip;
+       
+
+        if (!clip)
+        {
+
+
+            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/GameMusic/";
+            string igfileName = ExternalImageFilePath +musicName;
+            //Debug.Log(igfileName);
+            StartCoroutine(LoadAuido(igfileName));
+
+           
+           
+
+        }
+        else { 
+
+        clip.name = musicName;
+        audioList.Add(clip);
+            }
+        //clip.name = musicName;
+
+
+        //myaudio.clip = clip;
     }
 
     private void AudioPlay()
     {
 
 
-        int targetMusicIndex = curPageIndex - 1;
-        if (targetMusicIndex >= 0 && targetMusicIndex <= pageList.Count - 1)
+        Debug.Log(audioList.Count);
+
+        if (audioList.Count > 0)
         {
 
-            string music = musicNameList[curPageIndex - 1];
-
-            if (music != "")
+            int targetMusicIndex = curPageIndex - 1;
+            if (targetMusicIndex >= 0 && targetMusicIndex <= pageList.Count - 1)
             {
-                LoadBGM(music);
-                if (audio.isPlaying == false)
+
+
+                if (audioList[targetMusicIndex])
                 {
 
-                    audio.Play();
+                   
+                    if (!myaudio.clip) myaudio.clip = audioList[targetMusicIndex];
+
+
+                    if (myaudio.isPlaying == false)
+                    {
+
+                        myaudio.Play();
+
+                    }
+                }
+                else
+                {
+                    myaudio.clip = null;
+
 
                 }
+
+
+
+                //string music = musicNameList[curPageIndex - 1];
+
+                ////Debug.Log(music);
+                //if (music != "")
+                //{
+
+                //    if(!myaudio.clip) LoadBGM(music);
+
+                //    if (myaudio.isPlaying == false)
+                //    {
+
+                //        myaudio.Play();
+
+                //    }
+                //}
             }
         }
-        
 
     }
 
-    
+    private static byte[] getImageByte(string imagePath)
+    {
+        //读取到文件
+        FileStream files = new FileStream(imagePath, FileMode.Open);
+        //新建比特流对象
+        byte[] imgByte = new byte[files.Length];
+        //将文件写入对应比特流对象
+        files.Read(imgByte, 0, imgByte.Length);
+        //关闭文件
+        files.Close();
+        //返回比特流的值
+        return imgByte;
+    }
+
+    private IEnumerator LoadAuido(string audiopath)
+    {
+
+
+       
+
+        string audioName = audiopath.Split('/')[audiopath.Split('/').Length - 1];
+
+        WWW request = GetAudioFromFile(audiopath);
+        yield return request;
+
+
+       AudioClip audioClip = NAudioPlayer.FromMp3Data(request.bytes);
+
+        audioName = audioName.Split('.')[0];
+        audioClip.name = audioName;
+        
+        audioList.Add(audioClip);
+    }
+
+    private WWW GetAudioFromFile(string audiopath)
+    {
+        WWW reqeust = new WWW(audiopath);
+        return reqeust;
+    }
+
 }

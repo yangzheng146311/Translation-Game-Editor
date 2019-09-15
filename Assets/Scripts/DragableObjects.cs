@@ -9,7 +9,17 @@ public class DragableObjects : MonoBehaviour
     private float startPosY;
     private bool isBeingHeld = false;
 
-   
+    Vector3 scale;
+    float offset = 0.2f;
+    float maxSize = 2.0f;
+    float minSize = 0.4f;
+
+
+
+    private void Start()
+    {
+        scale = this.transform.localScale;
+    }
 
     // Update is called once per frame
     void Update()
@@ -43,6 +53,32 @@ public class DragableObjects : MonoBehaviour
 
         }
 
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            if (scale.x <= maxSize)
+            {
+                scale.x += offset;
+                scale.y += offset;
+                scale.z += offset;
+                this.transform.localScale = scale;
+            }
+
+        }
+        //Zoom in
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            if (scale.x > minSize)
+            {
+                scale.x -= offset;
+                scale.y -= offset;
+                scale.z -= offset;
+                this.transform.localScale = scale;
+            }
+        }
+
+
+
+
         if (Input.GetMouseButtonDown(1))
         {
             
@@ -51,7 +87,9 @@ public class DragableObjects : MonoBehaviour
         }
 
 
+       
 
+        
     }
     
     
