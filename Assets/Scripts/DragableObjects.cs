@@ -11,8 +11,8 @@ public class DragableObjects : MonoBehaviour
 
     Vector3 scale;
     float offset = 0.2f;
-    float maxSize = 2.0f;
-    float minSize = 0.4f;
+    float maxSize = 3.0f;
+    float minSize = 0.2f;
 
 
 
@@ -75,6 +75,29 @@ public class DragableObjects : MonoBehaviour
                 this.transform.localScale = scale;
             }
         }
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            
+                transform.Rotate(new Vector3(0, 180, 0), Space.World);
+
+        }
+
+        
+
+        //if (Input.GetKey(KeyCode.LeftArrow))
+        //{
+        //    if(transform.rotation.y==0)
+        //    transform.Rotate(new Vector3(0, 180, 0),Space.Self);
+
+        //}
+
+        //if (Input.GetKey(KeyCode.RightArrow))
+        //{
+        //   // if (transform.rotation.y == 180)
+        //        transform.Rotate(new Vector3(0, 0, 0), Space.Self);
+
+        //}
 
 
 

@@ -254,23 +254,31 @@ public class GameLoadManager : MonoBehaviour
                 string Head = data_value[6];
                 string Body = data_value[7];
                 string Leg = data_value[8];
-             
+                string Face = data_value[9];
+                float rotateY = float.Parse(data_value[10]);
+
                 Sprite hatSprite = Resources.Load<Sprite>("Art assets/Characters art/Individual character parts/" + Hat);
                 Sprite HeadSprite = Resources.Load<Sprite>("Art assets/Characters art/Individual character parts/" + Head);
                 Sprite BodySprite = Resources.Load<Sprite>("Art assets/Characters art/Individual character parts/" + Body);
                 Sprite LegSprite = Resources.Load<Sprite>("Art assets/Characters art/Individual character parts/" + Leg);
+                Sprite FaceSprite = Resources.Load<Sprite>("Art assets/Characters art/Expression/Expressions/" + Face);
+
+
+
 
                 Transform page = Scene.transform.Find("Page_" + pageID).Find("Characters");
                 GameObject obj = Instantiate(Tcharacter, page);
                 obj.name = CharacterName;
                 obj.transform.position = new Vector3(Pos_X, Pos_Y, Tobject.transform.position.z);
                 obj.transform.localScale = new Vector3(1.0f * Scale, 1.0f * Scale, 1.0f * Scale);
+                obj.transform.Rotate(0, rotateY * 180.0f, 0);
 
                 obj.transform.Find("Hat").GetComponent<SpriteRenderer>().sprite = hatSprite;
                 obj.transform.Find("Head").GetComponent<SpriteRenderer>().sprite = HeadSprite;
                 obj.transform.Find("Body").GetComponent<SpriteRenderer>().sprite = BodySprite;
                 obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sprite = LegSprite;
-                obj.GetComponent<DragableObjects>().enabled = false;
+                obj.transform.Find("Face").GetComponent<SpriteRenderer>().sprite = FaceSprite;
+                //obj.GetComponent<DragableObjects>().enabled = false;
 
             }
             line++;
@@ -306,7 +314,7 @@ public class GameLoadManager : MonoBehaviour
                 float Pos_X = float.Parse(data_value[3]);
                 float Pos_Y = float.Parse(data_value[4]);
                 float Scale = float.Parse(data_value[5]);
-
+                float rotateY = float.Parse(data_value[6]);
                 Sprite objSprite = Resources.Load<Sprite>("Art assets/Objects art/" + SpriteName);
                 Transform page = Scene.transform.Find("Page_" + pageID).Find("Objects");
                 GameObject obj = Instantiate(Tobject, page);
@@ -315,7 +323,9 @@ public class GameLoadManager : MonoBehaviour
                 obj.transform.position = new Vector3(Pos_X, Pos_Y, Tobject.transform.position.z);
 
                 obj.transform.localScale = new Vector3(1.0f * Scale, 1.0f * Scale, 1.0f * Scale);
-                obj.GetComponent<DragableObjects>().enabled = false;
+                obj.transform.Rotate(0, rotateY*180.0f, 0);
+
+                //obj.GetComponent<DragableObjects>().enabled = false;
              
             }
             line++;
@@ -736,7 +746,7 @@ public class GameLoadManager : MonoBehaviour
 
         try
         {
-            using (System.IO.StreamWriter file = new StreamWriter(@fileName, true))
+            using (System.IO.StreamWriter file = new StreamWriter(@fileName, true, System.Text.Encoding.UTF8))
             {
                file.WriteLine("PageID" + ',' + "TextID" + ','+"SourceText" + ','+"Translation"); ;
 

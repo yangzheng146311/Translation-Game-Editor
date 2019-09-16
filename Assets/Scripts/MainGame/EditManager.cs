@@ -35,7 +35,10 @@ public class EditManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        Debug.Log(Application.streamingAssetsPath);
+
+
 
         curPageIndex = 0;
         Tpage = GameObject.Find("Page_1");
@@ -253,7 +256,7 @@ public class EditManager : MonoBehaviour
                     //File.WriteAllText(@objfileName, string.Empty);
                     if (bObject == false)
                     {
-                        file.WriteLine("PageID" + ',' + "ObjectName" + ',' + "SpriteName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale");
+                        file.WriteLine("PageID" + ',' + "ObjectName" + ',' + "SpriteName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale" + ','+ "RotationY");
                         bObject =true;
                     }
 
@@ -265,7 +268,8 @@ public class EditManager : MonoBehaviour
                         float pos_x = obj.transform.position.x;
                         float pos_y = obj.transform.position.y;
                         float scale = obj.transform.localScale.x;
-                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + spriteName + ',' + pos_x + ',' + pos_y + ',' + scale);
+                        float rotationY = obj.transform.rotation.y;
+                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + spriteName + ',' + pos_x + ',' + pos_y + ',' + scale + ',' + rotationY);
                     }
 
 
@@ -276,7 +280,7 @@ public class EditManager : MonoBehaviour
                     //File.WriteAllText(@charcfileName, string.Empty);
                     if (bCharacter == false)
                     {
-                        file.WriteLine("PageID" + ',' + "CharacterName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale" + ',' + "Hat" + ',' + "Head" + ',' + "Body" + ',' + "Leg");
+                        file.WriteLine("PageID" + ',' + "CharacterName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale" + ',' + "Hat" + ',' + "Head" + ',' + "Body" + ',' + "Leg" + ',' + "Face" + ',' + "RotationY");
                         bCharacter = true;
                     }
 
@@ -287,15 +291,18 @@ public class EditManager : MonoBehaviour
                         float pos_x = obj.transform.position.x;
                         float pos_y = obj.transform.position.y;
                         float scale = obj.transform.localScale.x;
+                        float rotationY = obj.transform.rotation.y;
 
-                        string hat = "none", head = "none", body = "none", legs = "none";
+                        Debug.Log("rotationY=" + rotationY);
+
+                        string hat = "none", head = "none", body = "none", legs = "none", face = "none";
 
                         if (obj.transform.Find("Hat").GetComponent<SpriteRenderer>().sprite != null) hat = obj.transform.Find("Hat").GetComponent<SpriteRenderer>().sprite.name;
                         if (obj.transform.Find("Head").GetComponent<SpriteRenderer>().sprite != null) head = obj.transform.Find("Head").GetComponent<SpriteRenderer>().sprite.name;
                         if (obj.transform.Find("Body").GetComponent<SpriteRenderer>().sprite != null) body = obj.transform.Find("Body").GetComponent<SpriteRenderer>().sprite.name;
                         if (obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sprite != null) legs = obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sprite.name;
-
-                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + pos_x + ',' + pos_y + ',' + scale + ',' + hat + ',' + head + ',' + body + ',' + legs);
+                        if (obj.transform.Find("Face").GetComponent<SpriteRenderer>().sprite != null) face = obj.transform.Find("Face").GetComponent<SpriteRenderer>().sprite.name;
+                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + pos_x + ',' + pos_y + ',' + scale + ','   + hat + ',' + head + ',' + body + ',' + legs + ',' + face + ',' + rotationY.ToString());
                     }
 
 
@@ -315,7 +322,7 @@ public class EditManager : MonoBehaviour
         try
         {
             
-            using (System.IO.StreamWriter file = new StreamWriter(@inGameTextFileName, true))
+            using (System.IO.StreamWriter file = new StreamWriter(@inGameTextFileName, true, System.Text.Encoding.UTF8))
             {
                 //File.WriteAllText(@charcfileName, string.Empty);
                 if (btext == false)
@@ -334,6 +341,9 @@ public class EditManager : MonoBehaviour
                         string text = sceneTextList[k][j];
 
                         string replace=text.Replace(",", "/");
+
+
+                        //File.AppendAllText(@inGameTextFileName, pageID.ToString() + ',' + textID.ToString() + ',' + replace + Environment.NewLine, System.Text.Encoding.UTF8);
 
                         file.WriteLine(pageID.ToString() + ',' + textID.ToString() + ',' + replace);
 

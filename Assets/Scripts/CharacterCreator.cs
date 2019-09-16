@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;       //Allows us to use Lists.
+using System;
 
 [SerializeField]
 public class CharacterCreator : MonoBehaviour
@@ -78,6 +79,8 @@ public class CharacterCreator : MonoBehaviour
         hat = (currentButton.name[12] - '0') * 10 + currentButton.name[13] - '0';
         SetHat();
     }
+
+   
 
 
     // Instantiate characters from tiles
