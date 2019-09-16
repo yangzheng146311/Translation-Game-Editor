@@ -27,5 +27,6 @@ public class BG_Switch : MonoBehaviour
 
         bg = GameObject.Find("background");
         bg.GetComponent<SpriteRenderer>().sprite = background;
+        GameObject.Find("background").GetComponent<FullScreenSprite>().Fit();
     }
 }
