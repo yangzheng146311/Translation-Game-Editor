@@ -316,6 +316,22 @@ public class GameLoadManager : MonoBehaviour
                 float Scale = float.Parse(data_value[5]);
                 float rotateY = float.Parse(data_value[6]);
                 Sprite objSprite = Resources.Load<Sprite>("Art assets/Objects art/" + SpriteName);
+
+
+                if (!objSprite)
+                {
+                    string folderpath = Application.persistentDataPath + "/GameResources/GameImage/";
+                    string igFileName = folderpath + SpriteName;
+                    byte[] fileData = getImageByte(igFileName);
+                    Texture2D t2d = new Texture2D(2, 2);
+                    //根据路劲读取字节流再转换成图片形式
+                    t2d.LoadImage(fileData);
+                    objSprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
+                    objSprite.name = SpriteName;
+                }
+
+
+
                 Transform page = Scene.transform.Find("Page_" + pageID).Find("Objects");
                 GameObject obj = Instantiate(Tobject, page);
                 obj.name = ObjectName;
@@ -367,7 +383,7 @@ public class GameLoadManager : MonoBehaviour
                 if(!sprite)
                 {
                     string folderpath = Application.persistentDataPath + "/GameResources/GameImage/";
-                    string igFileName = folderpath + background+".jpg";
+                    string igFileName = folderpath + background;
                     byte[] fileData = getImageByte(igFileName);
                     Texture2D t2d = new Texture2D(2, 2);
                     //根据路劲读取字节流再转换成图片形式

@@ -10,7 +10,7 @@ public class DragableObjects : MonoBehaviour
     private bool isBeingHeld = false;
 
     Vector3 scale;
-    float offset = 0.2f;
+    float offset = 0.05f;
     float maxSize = 3.0f;
     float minSize = 0.2f;
 

@@ -132,6 +132,36 @@ public class EditManager : MonoBehaviour
         return obj;
     }
 
+
+    public GameObject InstantiateSprite(Sprite sprite)
+    {
+
+        GameObject obj = new GameObject();
+        SpriteRenderer renderer = obj.AddComponent<SpriteRenderer>();
+        renderer.sprite = sprite;
+        obj.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+
+
+
+        //if the object is not exist,is a new object type else add the amount of relevant type 
+        if (objTypes.ContainsKey(sprite.name) == false)
+        {
+            objTypes.Add(sprite.name, 0);
+        }
+        else
+        {
+            objTypes[sprite.name] += 1;
+        }
+        obj.name = sprite.name + "_" + objTypes[sprite.name];
+        sceneObjects.Add(obj.name, obj);
+        obj.AddComponent<BoxCollider2D>();
+        obj.AddComponent<DragableObjects>();
+
+        obj.transform.SetParent(GameObject.Find("Objects").transform);
+        return obj;
+    }
+
+
     public void DestroySprite(string name)
     {
         Destroy(sceneObjects[name]);
@@ -236,7 +266,7 @@ public class EditManager : MonoBehaviour
             {
 
 
-                using (System.IO.StreamWriter file = new StreamWriter(@bgfileName, true))
+                using (System.IO.StreamWriter file = new StreamWriter(@bgfileName, true, System.Text.Encoding.UTF8))
                 {
                     //File.WriteAllText(@bgfileName, string.Empty);
                     if (bBackground == false)
@@ -251,7 +281,7 @@ public class EditManager : MonoBehaviour
                     
                 }
                
-                using (System.IO.StreamWriter file = new StreamWriter(@objfileName, true))
+                using (System.IO.StreamWriter file = new StreamWriter(@objfileName, true, System.Text.Encoding.UTF8))
                 {
                     //File.WriteAllText(@objfileName, string.Empty);
                     if (bObject == false)
@@ -275,7 +305,7 @@ public class EditManager : MonoBehaviour
 
                 }
                
-                using (System.IO.StreamWriter file = new StreamWriter(@charcfileName, true))
+                using (System.IO.StreamWriter file = new StreamWriter(@charcfileName, true, System.Text.Encoding.UTF8))
                 {
                     //File.WriteAllText(@charcfileName, string.Empty);
                     if (bCharacter == false)
@@ -681,9 +711,9 @@ public class EditManager : MonoBehaviour
 
 
             Sprite sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
-            sprite.name = fileName.Split('.')[0];
-            
+            // sprite.name = fileName.Split('.')[0];
 
+            sprite.name = fileName;
             GameObject.Find("background").GetComponent<SpriteRenderer>().sprite = sprite;
             GameObject.Find("background").GetComponent<FullScreenSprite>().Fit();
 
@@ -703,6 +733,57 @@ public class EditManager : MonoBehaviour
             }
         }
     }
+
+
+
+    public void OpenObjImageFileBrowser()
+    {
+
+        string path = EditorUtility.OpenFilePanel("Select Image", "", "png");
+
+
+        if (path != "")
+        {
+            string fileName = (path.Split('/')[path.Split('/').Length - 1]);
+
+            byte[] fileData = getImageByte(path); // ERROR: The name 'File' does not exist in the current context?
+            Texture2D t2d = new Texture2D(2, 2);
+            //根据路劲读取字节流再转换成图片形式
+            t2d.LoadImage(fileData);
+
+
+            Sprite sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
+            //sprite.name = fileName.Split('.')[0];
+            sprite.name = fileName;
+
+
+
+
+            GameObject obj=InstantiateSprite(sprite);
+            
+
+
+
+
+
+
+
+
+            if (!Directory.Exists(Application.persistentDataPath + "/GameResources/" + "GameImage"))
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/GameResources/" + "GameImage");
+            }
+
+            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/" + "GameImage";
+            string igfileName = ExternalImageFilePath + "/" + fileName;
+
+            if (!File.Exists(igfileName))
+            {
+                System.IO.File.Copy(path, igfileName);
+            }
+        }
+    }
+
 
     private static byte[] getImageByte(string imagePath)
     {
