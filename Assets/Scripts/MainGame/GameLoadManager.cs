@@ -50,10 +50,10 @@ public class GameLoadManager : MonoBehaviour
         pageList = new List<GameObject>();
         musicNameList = new List<string>();
         audioList = new List<AudioClip>();
-        backgroundFile = Application.persistentDataPath + "/GameData/" + loadGameName+"/_Background.txt";
-        objectsFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_Obj.txt";
-        characterFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_Character.txt";
-        textFile = Application.persistentDataPath + "/GameData/" + loadGameName + "/_ingametext.txt";
+        backgroundFile = System.Environment.CurrentDirectory + "/GameData/" + loadGameName+"/_Background.txt";
+        objectsFile = System.Environment.CurrentDirectory + "/GameData/" + loadGameName + "/_Obj.txt";
+        characterFile = System.Environment.CurrentDirectory + "/GameData/" + loadGameName + "/_Character.txt";
+        textFile = System.Environment.CurrentDirectory + "/GameData/" + loadGameName + "/_ingametext.txt";
 
         Scene = GameObject.Find("Scene");
         Tpage = GameObject.Find("Page_1");
@@ -320,7 +320,7 @@ public class GameLoadManager : MonoBehaviour
 
                 if (!objSprite)
                 {
-                    string folderpath = Application.persistentDataPath + "/GameResources/GameImage/";
+                    string folderpath = System.Environment.CurrentDirectory + "/GameResources/GameImage/";
                     string igFileName = folderpath + SpriteName;
                     byte[] fileData = getImageByte(igFileName);
                     Texture2D t2d = new Texture2D(2, 2);
@@ -382,7 +382,7 @@ public class GameLoadManager : MonoBehaviour
 
                 if(!sprite)
                 {
-                    string folderpath = Application.persistentDataPath + "/GameResources/GameImage/";
+                    string folderpath = System.Environment.CurrentDirectory + "/GameResources/GameImage/";
                     string igFileName = folderpath + background;
                     byte[] fileData = getImageByte(igFileName);
                     Texture2D t2d = new Texture2D(2, 2);
@@ -757,7 +757,7 @@ public class GameLoadManager : MonoBehaviour
         string fileName = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"/" + loadGameName + "_Translation.csv";
         Debug.Log(fileName);
 
-        //string fileName = Application.persistentDataPath + "/GameData/" + loadGameName + "_Translation.csv";
+        //string fileName = System.Environment.CurrentDirectory + "/GameData/" + loadGameName + "_Translation.csv";
         File.WriteAllText(@fileName, string.Empty);
 
         try
@@ -804,9 +804,9 @@ public class GameLoadManager : MonoBehaviour
         {
 
 
-            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/GameMusic/";
+            string ExternalImageFilePath = System.Environment.CurrentDirectory + "/GameResources/GameMusic/";
             string igfileName = ExternalImageFilePath +musicName;
-            //Debug.Log(igfileName);
+            Debug.Log(igfileName);
             StartCoroutine(LoadAuido(igfileName));
 
            
@@ -902,7 +902,7 @@ public class GameLoadManager : MonoBehaviour
        
 
         string audioName = audiopath.Split('/')[audiopath.Split('/').Length - 1];
-
+        Debug.Log(audioName);
         WWW request = GetAudioFromFile(audiopath);
         yield return request;
 

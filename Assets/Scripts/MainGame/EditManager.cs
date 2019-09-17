@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.IO;
 using UnityEditor;
-
+using SimpleFileBrowser;
 public class EditManager : MonoBehaviour
 {
 
@@ -30,13 +30,13 @@ public class EditManager : MonoBehaviour
 
     string gameTitle = "UnNameGame";
 
-
+    private string path;
     
     // Start is called before the first frame update
     void Start()
     {
 
-        Debug.Log(Application.streamingAssetsPath);
+       
 
 
 
@@ -222,15 +222,15 @@ public class EditManager : MonoBehaviour
     }
 
     //
-    public void SavePage()
+    public void   SavePage()
     {
         Debug.Log("SavePage");
-        if (!Directory.Exists(Application.persistentDataPath + "/GameData/" + gameTitle))
+        if (!Directory.Exists(System.Environment.CurrentDirectory + "/GameData/" + gameTitle))
         {
-            Directory.CreateDirectory(Application.persistentDataPath + "/GameData/" + gameTitle);
+            Directory.CreateDirectory(System.Environment.CurrentDirectory + "/GameData/" + gameTitle);
         }
 
-        string GameFilePath = Application.persistentDataPath + "/GameData/" + gameTitle;
+        string GameFilePath = System.Environment.CurrentDirectory + "/GameData/" + gameTitle;
         string bgfileName = GameFilePath + "/_Background.txt";
         string objfileName = GameFilePath + "/_Obj.txt";
         string charcfileName = GameFilePath + "/_Character.txt";
@@ -697,91 +697,15 @@ public class EditManager : MonoBehaviour
     public void OpenImageFileBrowser()
     {
 
-        string path=EditorUtility.OpenFilePanel("Select Image","",  "jpg, jpeg");
-
-
-        if (path !="")
-        {
-            string fileName = (path.Split('/')[path.Split('/').Length - 1]);
-
-            byte[] fileData = getImageByte(path); // ERROR: The name 'File' does not exist in the current context?
-            Texture2D t2d = new Texture2D(2, 2);
-            //根据路劲读取字节流再转换成图片形式
-            t2d.LoadImage(fileData);
-
-
-            Sprite sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
-            // sprite.name = fileName.Split('.')[0];
-
-            sprite.name = fileName;
-            GameObject.Find("background").GetComponent<SpriteRenderer>().sprite = sprite;
-            GameObject.Find("background").GetComponent<FullScreenSprite>().Fit();
-
-
-
-            if (!Directory.Exists(Application.persistentDataPath + "/GameResources/" + "GameImage"))
-            {
-                Directory.CreateDirectory(Application.persistentDataPath + "/GameResources/" + "GameImage");
-            }
-
-            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/" + "GameImage";
-            string igfileName = ExternalImageFilePath + "/" + fileName;
-
-            if (!File.Exists(igfileName))
-            {
-                System.IO.File.Copy(path, igfileName);
-            }
-        }
+        StartCoroutine( ShowLoadBGDialogCoroutine());
     }
 
 
 
     public void OpenObjImageFileBrowser()
     {
+        StartCoroutine(ShowLoadObjDialogCoroutine());
 
-        string path = EditorUtility.OpenFilePanel("Select Image", "", "png");
-
-
-        if (path != "")
-        {
-            string fileName = (path.Split('/')[path.Split('/').Length - 1]);
-
-            byte[] fileData = getImageByte(path); // ERROR: The name 'File' does not exist in the current context?
-            Texture2D t2d = new Texture2D(2, 2);
-            //根据路劲读取字节流再转换成图片形式
-            t2d.LoadImage(fileData);
-
-
-            Sprite sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
-            //sprite.name = fileName.Split('.')[0];
-            sprite.name = fileName;
-
-
-
-
-            GameObject obj=InstantiateSprite(sprite);
-            
-
-
-
-
-
-
-
-
-            if (!Directory.Exists(Application.persistentDataPath + "/GameResources/" + "GameImage"))
-            {
-                Directory.CreateDirectory(Application.persistentDataPath + "/GameResources/" + "GameImage");
-            }
-
-            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/" + "GameImage";
-            string igfileName = ExternalImageFilePath + "/" + fileName;
-
-            if (!File.Exists(igfileName))
-            {
-                System.IO.File.Copy(path, igfileName);
-            }
-        }
     }
 
 
@@ -803,48 +727,18 @@ public class EditManager : MonoBehaviour
 
     public void OpenMusicFileBrowser()
     {
-
-        string path = EditorUtility.OpenFilePanel("Select Music", "", "mp3,wav,wma");
-        string audioName = path.Split('/')[path.Split('/').Length - 1];
-
-        if (path != "")
-        {
-            Debug.Log(path);
-
-            if (!Directory.Exists(Application.persistentDataPath + "/GameResources/" + "GameMusic"))
-            {
-                Directory.CreateDirectory(Application.persistentDataPath + "/GameResources/" + "GameMusic");
-            }
-
-            string ExternalImageFilePath = Application.persistentDataPath + "/GameResources/" + "GameMusic";
-            string igfileName = ExternalImageFilePath + "/" + audioName;
-
-            if (!File.Exists(igfileName))
-            {
-                System.IO.File.Copy(path, igfileName);
-            }
-
-            string formatPath = string.Format("file://{0}", path);
-
-
-            StartCoroutine(LoadAuido(formatPath));
-           
-
-        }
-
-
-       
+        StartCoroutine(
+          ShowLoadMusicDialogCoroutine());
     }
 
     private IEnumerator LoadAuido(string audiopath)
     {
 
 
+        string audioName = audiopath.Split('\\')[audiopath.Split('\\').Length - 1];
 
 
-
-        string audioName = audiopath.Split('/')[audiopath.Split('/').Length - 1];
-
+       
         WWW request = GetAudioFromFile(audiopath);
         yield return request;
 
@@ -881,5 +775,204 @@ public class EditManager : MonoBehaviour
     {
         WWW reqeust = new WWW(audiopath);
         return reqeust;
+    }
+
+    public void fileBrowser()
+    {
+        StartCoroutine(
+        ShowLoadBGDialogCoroutine());
+    }
+
+
+
+    IEnumerator ShowLoadBGDialogCoroutine()
+    {
+        FileBrowser.SetFilters(false, new FileBrowser.Filter("Images", ".jpg", ".jpeg", ".png"));
+
+        //FileBrowser.SetDefaultFilter(".jpg");
+        // Show a load file dialog and wait for a response from user
+        // Load file/folder: file, Initial path: default (Documents), Title: "Load File", submit button text: "Load"
+        yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
+
+        string path = FileBrowser.Result;
+       
+        // Dialog is closed
+        // Print whether a file is chosen (FileBrowser.Success)
+        // and the path to the selected file (FileBrowser.Result) (null, if FileBrowser.Success is false)
+
+        if (path != "")
+        {
+            string fileName = path.Split('\\')[path.Split('\\').Length - 1];
+
+            byte[] fileData = getImageByte(path); // ERROR: The name 'File' does not exist in the current context?
+            Texture2D t2d = new Texture2D(2, 2);
+            //根据路劲读取字节流再转换成图片形式
+            t2d.LoadImage(fileData);
+
+
+            Sprite sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
+            // sprite.name = fileName.Split('.')[0];
+
+            sprite.name = fileName;
+            GameObject.Find("background").GetComponent<SpriteRenderer>().sprite = sprite;
+            GameObject.Find("background").GetComponent<FullScreenSprite>().Fit();
+
+
+
+            if (!Directory.Exists(System.Environment.CurrentDirectory + "/GameResources/" + "GameImage"))
+            {
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + "/GameResources/" + "GameImage");
+            }
+
+            string ExternalImageFilePath = System.Environment.CurrentDirectory + "/GameResources/" + "GameImage";
+            string igfileName = ExternalImageFilePath + "/" + fileName;
+
+            if (!File.Exists(igfileName))
+            {
+                System.IO.File.Copy(path, igfileName);
+            }
+        }
+
+       // Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
+    }
+
+    IEnumerator ShowLoadObjDialogCoroutine()
+    {
+        FileBrowser.SetFilters(false, new FileBrowser.Filter("Images", ".png"));
+        // Show a load file dialog and wait for a response from user
+        // Load file/folder: file, Initial path: default (Documents), Title: "Load File", submit button text: "Load"
+        yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
+
+        string path = FileBrowser.Result;
+
+        // Dialog is closed
+        // Print whether a file is chosen (FileBrowser.Success)
+        // and the path to the selected file (FileBrowser.Result) (null, if FileBrowser.Success is false)
+
+        if (path != "")
+        {
+            string fileName = path.Split('\\')[path.Split('\\').Length - 1];
+
+            byte[] fileData = getImageByte(path); // ERROR: The name 'File' does not exist in the current context?
+            Texture2D t2d = new Texture2D(2, 2);
+            //根据路劲读取字节流再转换成图片形式
+            t2d.LoadImage(fileData);
+
+
+            Sprite sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0.5f, 0.5f));
+            //sprite.name = fileName.Split('.')[0];
+            sprite.name = fileName;
+
+            GameObject obj = InstantiateSprite(sprite);
+
+
+            if (!Directory.Exists(System.Environment.CurrentDirectory + "/GameResources/" + "GameImage"))
+            {
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + "/GameResources/" + "GameImage");
+            }
+
+            string ExternalImageFilePath = System.Environment.CurrentDirectory + "/GameResources/" + "GameImage";
+            string igfileName = ExternalImageFilePath + "/" + fileName;
+
+            if (!File.Exists(igfileName))
+            {
+                System.IO.File.Copy(path, igfileName);
+            }
+        }
+
+        // Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
+    }
+
+    IEnumerator ShowLoadMusicDialogCoroutine()
+    {
+        FileBrowser.SetFilters(false, new FileBrowser.Filter("Music", ".mp3", ".wav"));
+        // Show a load file dialog and wait for a response from user
+        // Load file/folder: file, Initial path: default (Documents), Title: "Load File", submit button text: "Load"
+        yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
+
+        string path = FileBrowser.Result;
+
+
+       
+        // Dialog is closed
+        // Print whether a file is chosen (FileBrowser.Success)
+        // and the path to the selected file (FileBrowser.Result) (null, if FileBrowser.Success is false)
+
+        string audioName = path.Split('\\')[path.Split('\\').Length - 1];
+
+
+
+        if (path != "")
+        {
+            Debug.Log(path);
+
+            if (!Directory.Exists(System.Environment.CurrentDirectory + "/GameResources/" + "GameMusic"))
+            {
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + "/GameResources/" + "GameMusic");
+            }
+
+            string ExternalImageFilePath = System.Environment.CurrentDirectory + "/GameResources/" + "GameMusic";
+            string igfileName = ExternalImageFilePath + "/" + audioName;
+
+            if (!File.Exists(igfileName))
+            {
+                System.IO.File.Copy(path, igfileName);
+            }
+
+            string formatPath = string.Format("file://{0}", path);
+
+
+            StartCoroutine(LoadAuido(formatPath));
+
+
+        }
+
+        // Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
+    }
+
+
+
+    IEnumerator ShowLoadDialogCoroutine()
+    {
+        // Show a load file dialog and wait for a response from user
+        // Load file/folder: file, Initial path: default (Documents), Title: "Load File", submit button text: "Load"
+        yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
+
+        // Dialog is closed
+        // Print whether a file is chosen (FileBrowser.Success)
+        // and the path to the selected file (FileBrowser.Result) (null, if FileBrowser.Success is false)
+
+
+
+        Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
+    }
+
+
+    public void OpenEXE(string _exePathName, string _exeArgus)
+    {
+        try
+        {
+            System.Diagnostics.Process myprocess = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo(_exePathName, _exeArgus);
+            myprocess.StartInfo = startInfo;
+            myprocess.StartInfo.UseShellExecute = false;
+            myprocess.Start();
+        }
+        catch (Exception ex)
+        {
+            UnityEngine.Debug.Log("出错原因：" + ex.Message);
+        }
+    }
+
+    public void OpenGame()
+    {
+
+
+        System.Diagnostics.Process.Start(@"C:\Users\ZHENG YANG\Desktop\New folder (2)\FINAL_SP\Windows_SP\MiniGame_SP.exe");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

@@ -21,14 +21,20 @@ public class GameImage : MonoBehaviour
 
     public void LoadGame()
     {
-        string gameName = this.gameObject.name;
 
-        
+        if (this.gameObject.name != "CS_GAME" && this.gameObject.name != "CT_GAME" && this.gameObject.name != "EN_GAME" && this.gameObject.name != "SP_GAME")
+        {
 
-        MenuEvent.loadingGameName = gameName;
+            string gameName = this.gameObject.name;
+            MenuEvent.loadingGameName = gameName;
+            SceneManager.LoadScene("DemoGame");
+        }
+        else
+        {
 
-
-        SceneManager.LoadScene("DemoGame");
+            Debug.Log(System.Environment.CurrentDirectory+"\\"+this.gameObject.name + "\\" +this.gameObject.name+".exe");
+            System.Diagnostics.Process.Start(System.Environment.CurrentDirectory + "\\" + this.gameObject.name + "\\" + this.gameObject.name + ".exe");
+        }
 
 
 
@@ -38,9 +44,15 @@ public class GameImage : MonoBehaviour
     public void DeleteGame()
     {
 
-        string gameName = this.gameObject.name;
-        string path = Application.persistentDataPath + "/GameData/" + gameName;
-        DirectoryInfo dir = new DirectoryInfo(path);
-        dir.Delete(true);
+        if (this.gameObject.name != "CS_GAME" && this.gameObject.name != "CT_GAME" && this.gameObject.name != "EN_GAME" && this.gameObject.name != "SP_GAME")
+        {
+
+
+
+            string gameName = this.gameObject.name;
+            string path =System.Environment.CurrentDirectory + "/GameData/" + gameName;
+            DirectoryInfo dir = new DirectoryInfo(path);
+            dir.Delete(true);
+        }
     }
 }

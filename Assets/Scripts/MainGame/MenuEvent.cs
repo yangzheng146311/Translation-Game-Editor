@@ -60,23 +60,28 @@ public class MenuEvent : MonoBehaviour
                 Destroy(TeacherGameList.GetChild(i).gameObject);
         }
 
-        string path = Application.persistentDataPath + "/GameData";
+        string path = System.Environment.CurrentDirectory + "/GameData";
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
         }
 
-        string[] GameFolders = Directory.GetDirectories(Application.persistentDataPath + "/GameData");
+        string[] GameFolders = Directory.GetDirectories(System.Environment.CurrentDirectory + @"\GameData");
 
         foreach (var s in GameFolders)
         {
 
             string fileName = s;
             GameObject gameImage = Instantiate(teacherGameImage, TeacherGameList.transform);
-            gameImage.name = s.Split('/')[7].Split('\\')[1];
+
+            Debug.Log(s);
+            gameImage.name = s.Split('\\')[6];
             gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
             gameImage.gameObject.SetActive(true);
         }
+
+
+        LoadInBuildGameImage_Teacher();
 }
     public void LoadStudentGameList()
     {
@@ -86,20 +91,20 @@ public class MenuEvent : MonoBehaviour
                 Destroy(StudentGameList.GetChild(i).gameObject);
         }
 
-        string path = Application.persistentDataPath + "/GameData";
+        string path = System.Environment.CurrentDirectory + "/GameData";
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
         }
 
-        string[] GameFolders = Directory.GetDirectories(Application.persistentDataPath + "/GameData");
+        string[] GameFolders = Directory.GetDirectories(System.Environment.CurrentDirectory + @"\GameData");
         foreach (var s in GameFolders)
         {
-            Debug.Log(s);
+           // Debug.Log(s);
 
             string fileName = s;
             GameObject gameImage = Instantiate(studentGameImage, StudentGameList.transform);
-            gameImage.name = s.Split('/')[7].Split('\\')[1];
+            gameImage.name = s.Split('\\')[6];
 
             gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
 
@@ -107,10 +112,51 @@ public class MenuEvent : MonoBehaviour
 
 
         }
+
+        LoadInBuildGameImage_Student();
     }
 
-    
-   
+
+    private void LoadInBuildGameImage_Student()
+    {
+        string[] fileNames = { "CS_GAME", "CT_GAME", "SP_GAME", "EN_GAME" };
+
+
+
+        foreach (string s in fileNames)
+        {
+            GameObject gameImage = Instantiate(studentGameImage, StudentGameList.transform);
+            gameImage.name = s;
+
+            gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
+
+            gameImage.gameObject.SetActive(true);
+        }
+
+
+    }
+
+    private void LoadInBuildGameImage_Teacher()
+    {
+        string[] fileNames = { "CS_GAME", "CT_GAME", "SP_GAME", "EN_GAME" };
+
+
+
+        foreach (string s in fileNames)
+        {
+            GameObject gameImage = Instantiate(teacherGameImage, TeacherGameList.transform);
+            gameImage.name = s;
+
+            gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
+
+            gameImage.gameObject.SetActive(true);
+        }
+
+
+    }
+
+
+
 
 
 
