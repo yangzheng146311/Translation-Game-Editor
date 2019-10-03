@@ -207,4 +207,18 @@ public class FR_S3 : MonoBehaviour
         
 
     }
+
+    public void ShowCorrectAnswer()
+    {
+        inputframe.GetComponent<InputField>().text = translateText[dialogIndex];
+
+
+    }
+
+    public void EndGame()
+    {
+
+        Debug.Log("quit");
+        Application.Quit();
+    }
 }

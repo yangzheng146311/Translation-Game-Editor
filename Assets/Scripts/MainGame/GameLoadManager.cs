@@ -92,10 +92,17 @@ public class GameLoadManager : MonoBehaviour
         try
         {
 
-            string curtext = textListDic[curPageIndex][curSubtileIndex];
+            if (textListDic[curPageIndex][curSubtileIndex] == "")
+                subtitle.GetComponent<Text>().text = "(Slient)";
+            else
+            {
 
-            if (curtext == "") curtext = "(Slient)";
-            subtitle.GetComponent<Text>().text = curtext;
+
+                string curtext = textListDic[curPageIndex][curSubtileIndex];
+
+                //if (curtext == "") curtext = "(Slient)";
+                subtitle.GetComponent<Text>().text = curtext;
+            }
         }
         catch (Exception err)
         {
@@ -249,13 +256,16 @@ public class GameLoadManager : MonoBehaviour
                 string CharacterName = data_value[1];        
                 float Pos_X = float.Parse(data_value[2]);
                 float Pos_Y = float.Parse(data_value[3]);
-                float Scale = float.Parse(data_value[4]);
-                string Hat = data_value[5];
-                string Head = data_value[6];
-                string Body = data_value[7];
-                string Leg = data_value[8];
-                string Face = data_value[9];
-                float rotateY = float.Parse(data_value[10]);
+                float Pos_Z = float.Parse(data_value[4]);
+                float Scale = float.Parse(data_value[5]);
+                string Hat = data_value[6];
+                string Head = data_value[7];
+                string Body = data_value[8];
+                string Leg = data_value[9];
+                string Face = data_value[10];
+                float rotateY = float.Parse(data_value[11]);
+                float rotateZ = float.Parse(data_value[12]);
+                int order = int.Parse(data_value[13]);
 
                 Sprite hatSprite = Resources.Load<Sprite>("Art assets/Characters art/Individual character parts/" + Hat);
                 Sprite HeadSprite = Resources.Load<Sprite>("Art assets/Characters art/Individual character parts/" + Head);
@@ -269,15 +279,28 @@ public class GameLoadManager : MonoBehaviour
                 Transform page = Scene.transform.Find("Page_" + pageID).Find("Characters");
                 GameObject obj = Instantiate(Tcharacter, page);
                 obj.name = CharacterName;
-                obj.transform.position = new Vector3(Pos_X, Pos_Y, Tobject.transform.position.z);
+                obj.transform.localPosition = new Vector3(Pos_X, Pos_Y, Pos_Z);
                 obj.transform.localScale = new Vector3(1.0f * Scale, 1.0f * Scale, 1.0f * Scale);
-                obj.transform.Rotate(0, rotateY * 180.0f, 0);
+                obj.transform.Rotate(0, rotateY * 180.0f, rotateZ);
 
                 obj.transform.Find("Hat").GetComponent<SpriteRenderer>().sprite = hatSprite;
                 obj.transform.Find("Head").GetComponent<SpriteRenderer>().sprite = HeadSprite;
                 obj.transform.Find("Body").GetComponent<SpriteRenderer>().sprite = BodySprite;
                 obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sprite = LegSprite;
                 obj.transform.Find("Face").GetComponent<SpriteRenderer>().sprite = FaceSprite;
+
+                obj.GetComponent<SpriteRenderer>().sortingOrder=order;
+
+                if (obj.transform.Find("Head") != null)
+                    obj.transform.Find("Head").GetComponent<SpriteRenderer>().sortingOrder += obj.gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+                if (obj.transform.Find("Body") != null)
+                    obj.transform.Find("Body").GetComponent<SpriteRenderer>().sortingOrder += obj.gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+                if (obj.transform.Find("Legs") != null)
+                    obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sortingOrder += obj.gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+                if (obj.transform.Find("Face") != null)
+                    obj.transform.Find("Face").GetComponent<SpriteRenderer>().sortingOrder += obj.gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+                if (obj.transform.Find("Hat") != null)
+                    obj.transform.Find("Hat").GetComponent<SpriteRenderer>().sortingOrder += obj.gameObject.GetComponent<SpriteRenderer>().sortingOrder;
                 //obj.GetComponent<DragableObjects>().enabled = false;
 
             }
@@ -286,7 +309,7 @@ public class GameLoadManager : MonoBehaviour
         }
     }
 
-    private void LoadObjects(string fileName)
+    private void  LoadObjects(string fileName)
     {
         int line = 1;
         StreamReader streamReader = new StreamReader(@fileName);
@@ -313,8 +336,11 @@ public class GameLoadManager : MonoBehaviour
                 string SpriteName = data_value[2];
                 float Pos_X = float.Parse(data_value[3]);
                 float Pos_Y = float.Parse(data_value[4]);
-                float Scale = float.Parse(data_value[5]);
-                float rotateY = float.Parse(data_value[6]);
+                float Pos_Z = float.Parse(data_value[5]);
+                float Scale = float.Parse(data_value[6]);
+                float rotateY = float.Parse(data_value[7]);
+                float rotateZ = float.Parse(data_value[8]);
+                int order = int.Parse(data_value[9]);
                 Sprite objSprite = Resources.Load<Sprite>("Art assets/Objects art/" + SpriteName);
 
 
@@ -336,13 +362,13 @@ public class GameLoadManager : MonoBehaviour
                 GameObject obj = Instantiate(Tobject, page);
                 obj.name = ObjectName;
                 obj.GetComponent<SpriteRenderer>().sprite = objSprite;
-                obj.transform.position = new Vector3(Pos_X, Pos_Y, Tobject.transform.position.z);
+                obj.transform.localPosition = new Vector3(Pos_X, Pos_Y, Pos_Z);
 
                 obj.transform.localScale = new Vector3(1.0f * Scale, 1.0f * Scale, 1.0f * Scale);
-                obj.transform.Rotate(0, rotateY*180.0f, 0);
-
+                obj.transform.Rotate(0, rotateY*180.0f, rotateZ);
+                obj.GetComponent<SpriteRenderer>().sortingOrder = order;
                 //obj.GetComponent<DragableObjects>().enabled = false;
-             
+
             }
             line++;
 
@@ -828,7 +854,7 @@ public class GameLoadManager : MonoBehaviour
     {
 
 
-        Debug.Log(audioList.Count);
+
 
         if (audioList.Count > 0)
         {

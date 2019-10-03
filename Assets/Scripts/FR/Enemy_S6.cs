@@ -13,7 +13,9 @@ public class Enemy_S6 : MonoBehaviour
     public GameObject slider;
     public GameObject fill;
 
-   
+    float attacktime = 0;
+
+    public bool fight = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +28,20 @@ public class Enemy_S6 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+        if (fight)
+        {
+            attacktime += Time.deltaTime;
+
+            if (attacktime > 1.0f)
+            {
+
+
+                attacktime = 0;
+                gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 4.0f,ForceMode2D.Impulse);
+                Debug.Log("force");
+            }
+        }
 
 
 
@@ -42,16 +57,17 @@ public class Enemy_S6 : MonoBehaviour
     {
 
 
-        gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 0.5f, ForceMode2D.Impulse);
+        //gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 0.5f, ForceMode2D.Impulse);
         Debug.Log(curHP);
         if (collision.gameObject.name!= "Floor")
         {
 
             if (curHP > 0)
             {
-                curHP -= 20;
+                curHP -= 5;
                 slider.GetComponent<Slider>().value = (curHP / 100);
                 Debug.Log(slider.GetComponent<Slider>().value);
+                gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 10.0f, ForceMode2D.Impulse);
 
                 if (curHP == 0)
                 {

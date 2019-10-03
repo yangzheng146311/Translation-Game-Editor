@@ -143,8 +143,15 @@ public class FR_S4 : MonoBehaviour
                         correctResult.SetActive(true);
                         correctResult.transform.Find("Text").GetComponent<Text>().text = "Level Pass";
                     }
+                    else
+                    {
+
+                        wrongResult.SetActive(true);
+                    }
                 }
 
+
+                Debug.Log(actionIndex);
 
             }
         }
@@ -220,5 +227,17 @@ public class FR_S4 : MonoBehaviour
         actionList[actionIndex]();
     }
 
+    public void ShowCorrectAnswer()
+    {
+        inputframe.GetComponent<InputField>().text = translateText[dialogIndex];
 
+
+    }
+
+    public void EndGame()
+    {
+
+        Debug.Log("quit");
+        Application.Quit();
+    }
 }

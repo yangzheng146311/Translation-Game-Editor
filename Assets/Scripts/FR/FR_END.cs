@@ -1,30 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class FR_S1 : MonoBehaviour
+public class FR_END: MonoBehaviour
 {
-    public GameObject inputframe;
     public GameObject title;
-
+    public GameObject inputframe;
 
     public GameObject correctResult;
     public GameObject wrongResult;
 
-
     static public string sourceTitle;
     static public string transTitle;
-
-
 
 
     // Start is called before the first frame update
     void Start()
     {
         sourceTitle = title.GetComponent<Text>().text;
-
     }
 
     // Update is called once per frame
@@ -33,24 +27,18 @@ public class FR_S1 : MonoBehaviour
         ReplaceTitle();
     }
 
-    public void ShowInputFrame()
-    {
-
-        inputframe.SetActive(true);
-    }
-
     public void ReplaceTitle()
     {
 
 
 
-        if(inputframe.activeSelf==true)
+        if (inputframe.activeSelf == true)
         {
 
             if (Input.GetKeyDown(KeyCode.Return))
             {
 
-                if (inputframe.GetComponent<InputField>().text == "The Myth of Theseus")
+                if (inputframe.GetComponent<InputField>().text == "THE END")
                 {
 
 
@@ -65,7 +53,7 @@ public class FR_S1 : MonoBehaviour
                     Debug.Log(transTitle);
 
                     correctResult.SetActive(true);
-                    
+
                 }
 
                 else
@@ -84,15 +72,8 @@ public class FR_S1 : MonoBehaviour
 
     public void ShowCorrectAnswer()
     {
-        inputframe.GetComponent<InputField>().text = "The Myth of Theseus";
+        inputframe.GetComponent<InputField>().text = "THE END";
 
-
-    }
-
-    public void LoadNextScene()
-    {
-
-        SceneManager.LoadScene("FR_S2");
 
     }
 
@@ -102,6 +83,4 @@ public class FR_S1 : MonoBehaviour
         Debug.Log("quit");
         Application.Quit();
     }
-
-
 }

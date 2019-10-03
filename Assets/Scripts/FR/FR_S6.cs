@@ -12,8 +12,9 @@ public class FR_S6 : MonoBehaviour
     public GameObject wrongResult;
     public GameObject Theseus;
     public GameObject Periphetes;
+    public AudioSource audioSource;
 
-
+    public AudioClip[] music;
 
     public string[] sourceText;
     public string[] translateText;
@@ -64,7 +65,7 @@ public class FR_S6 : MonoBehaviour
     void Update()
     {
         ReplaceTitle();
-
+        if(Periphetes.GetComponent<Enemy_S6>().fight==false)
         MoveAction(Periphetes, new Vector2(-1.62f,-1.8f), 0);
        // MoveAction(Theseus, new Vector2(-3.26f, -1.99f), 1);
 
@@ -139,6 +140,8 @@ public class FR_S6 : MonoBehaviour
     private void Action_0()
     {
         ShowDialog(sourceText[0]);
+        audioSource.clip = music[1];
+        audioSource.Play();
 
     }
 
@@ -153,6 +156,8 @@ public class FR_S6 : MonoBehaviour
     {
         dialogIndex++;
         ShowDialog(sourceText[2]);
+        audioSource.clip = music[0];
+        audioSource.Play();
 
     }
 
@@ -160,12 +165,16 @@ public class FR_S6 : MonoBehaviour
     {
         dialogIndex++;
         ShowDialog(sourceText[3]);
+        audioSource.clip = music[1];
+        audioSource.Play();
     }
 
     private void Action_4()
     {
         dialogIndex++;
         ShowDialog(sourceText[4]);
+        audioSource.clip = music[0];
+        audioSource.Play();
 
     }
 
@@ -173,6 +182,8 @@ public class FR_S6 : MonoBehaviour
     {
         dialogIndex++;
         ShowDialog(sourceText[5]);
+        audioSource.clip = music[1];
+        audioSource.Play();
 
     }
 
@@ -196,15 +207,21 @@ public class FR_S6 : MonoBehaviour
 
     private void Action_9()
     {
+        audioSource.clip = music[2];
+        audioSource.loop = true;
+        audioSource.Play();
         Debug.Log("Fight");
         subtitle.SetActive(false);
         Theseus.GetComponent<Character_S6>().canMove = true;
+
+
+        Periphetes.GetComponent<Enemy_S6>().fight = true;
 
     }
 
     private void Action_10()
     {
-        Debug.Log("load_S7");
+        SceneManager.LoadScene("FR_END");
 
     }
     public void Load_7()
@@ -241,5 +258,18 @@ public class FR_S6 : MonoBehaviour
         }
 
 
+    }
+    public void ShowCorrectAnswer()
+    {
+        inputframe.GetComponent<InputField>().text = translateText[dialogIndex];
+
+
+    }
+
+    public void EndGame()
+    {
+
+        Debug.Log("quit");
+        Application.Quit();
     }
 }

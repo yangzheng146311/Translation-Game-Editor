@@ -47,7 +47,7 @@ public class Character_S4 : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject.name);
+        //Debug.Log(collision.gameObject.name);
 
         if (collision.gameObject.name.Equals("sword"))
         {

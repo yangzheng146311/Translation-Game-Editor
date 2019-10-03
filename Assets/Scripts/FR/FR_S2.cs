@@ -11,7 +11,10 @@ public class FR_S2 : MonoBehaviour
     public GameObject correctResult;
     public GameObject wrongResult;
     public GameObject Aethra;
-    public GameObject Theseus; 
+    public GameObject Theseus;
+
+
+    public AudioClip DoorOpen;
 
 
     public string[] sourceText;
@@ -129,6 +132,10 @@ public class FR_S2 : MonoBehaviour
         Aethra.transform.Translate(Vector3.right*5,Space.World);
         Theseus.transform.Translate(Vector3.right * 6, Space.World);
 
+
+        GameObject.Find("SoundManager").GetComponent<AudioSource>().clip = DoorOpen;
+        GameObject.Find("SoundManager").GetComponent<AudioSource>().Play();
+
         if (correctResult.activeSelf == false)
             correctResult.SetActive(true);
     }
@@ -140,4 +147,18 @@ public class FR_S2 : MonoBehaviour
         SceneManager.LoadScene("FR_S3");
     }
 
+
+    public void ShowCorrectAnswer()
+    {
+        inputframe.GetComponent<InputField>().text = translateText[dialogIndex];
+
+
+    }
+
+    public void EndGame()
+    {
+
+        Debug.Log("quit");
+        Application.Quit();
+    }
 }

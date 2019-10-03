@@ -83,7 +83,7 @@ public class FR_S7 : MonoBehaviour
 
 
     bool ifAllFoxesDie()
-    {
+    { 
 
 
         foreach(var f in foxes)
@@ -255,5 +255,12 @@ public class FR_S7 : MonoBehaviour
         subtitle.SetActive(true);
 
         inputframe.GetComponent<InputField>().text = "";
+    }
+
+    public void EndGame()
+    {
+
+        Debug.Log("quit");
+        Application.Quit();
     }
 }

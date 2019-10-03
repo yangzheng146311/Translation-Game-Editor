@@ -34,3 +34,4 @@ public class FaceIcon : MonoBehaviour
         GameObject.Find("CharacterUI").transform.Find("character").Find("Face").GetComponent<SpriteRenderer>().sprite = sp;
     }
 }
+ 

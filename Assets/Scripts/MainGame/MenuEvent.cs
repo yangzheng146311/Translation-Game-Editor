@@ -74,8 +74,10 @@ public class MenuEvent : MonoBehaviour
             string fileName = s;
             GameObject gameImage = Instantiate(teacherGameImage, TeacherGameList.transform);
 
-            Debug.Log(s);
-            gameImage.name = s.Split('\\')[6];
+            string[] temp = s.Split('\\');
+            gameImage.name = temp[temp.Length - 1];
+
+           
             gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
             gameImage.gameObject.SetActive(true);
         }
@@ -104,8 +106,13 @@ public class MenuEvent : MonoBehaviour
 
             string fileName = s;
             GameObject gameImage = Instantiate(studentGameImage, StudentGameList.transform);
-            gameImage.name = s.Split('\\')[6];
 
+
+            string[] temp = s.Split('\\');
+
+          
+            gameImage.name = temp[temp.Length - 1];
+           
             gameImage.transform.Find("Text").GetComponent<Text>().text = gameImage.name;
 
             gameImage.gameObject.SetActive(true);

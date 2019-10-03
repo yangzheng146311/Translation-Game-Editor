@@ -54,6 +54,7 @@ public class Dog : MonoBehaviour
             if (gameObject.GetComponent<Animation>().isPlaying == false)
             {
                 gameObject.GetComponent<Animation>().Play();
+                GameObject.Find("SoundManager").GetComponent<AudioSource>().Play();
                 
             }
             

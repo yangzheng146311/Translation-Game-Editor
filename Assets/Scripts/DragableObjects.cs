@@ -12,7 +12,7 @@ public class DragableObjects : MonoBehaviour
     Vector3 scale;
     float offset = 0.05f;
     float maxSize = 3.0f;
-    float minSize = 0.2f;
+    float minSize = 0.1f;
 
 
 
@@ -30,7 +30,7 @@ public class DragableObjects : MonoBehaviour
             mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
-            this.transform.position = new Vector3(mousePos.x - startPosX, mousePos.y - startPosY, 0);
+            this.transform.position = new Vector3(mousePos.x - startPosX, mousePos.y - startPosY,transform.position.z);
         }
 
         
@@ -39,7 +39,7 @@ public class DragableObjects : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl))
         {
 
             Vector3 mousePos;
@@ -53,7 +53,7 @@ public class DragableObjects : MonoBehaviour
 
         }
 
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0&&Input.GetKey(KeyCode.LeftShift))
         {
             if (scale.x <= maxSize)
             {
@@ -65,7 +65,7 @@ public class DragableObjects : MonoBehaviour
 
         }
         //Zoom in
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && Input.GetKey(KeyCode.LeftShift))
         {
             if (scale.x > minSize)
             {
@@ -76,7 +76,70 @@ public class DragableObjects : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(2))
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && Input.GetKey(KeyCode.Q))
+        {
+            Debug.Log("rotate_>0");
+            transform.Rotate(new Vector3(0, 0, 10), Space.World);
+        }
+
+
+
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && Input.GetKey(KeyCode.Q))
+        {
+            Debug.Log("rotate_<0");
+            transform.Rotate(new Vector3(0, 0, -10), Space.World);
+        }
+
+
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && Input.GetKey(KeyCode.W))
+        {
+            Debug.Log("forward");
+
+
+            if (gameObject.GetComponent<SpriteRenderer>().sortingOrder<10)
+            gameObject.GetComponent<SpriteRenderer>().sortingOrder++;
+
+            if (transform.Find("Head") != null)
+                transform.Find("Head").GetComponent<SpriteRenderer>().sortingOrder += gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Body") != null)
+                transform.Find("Body").GetComponent<SpriteRenderer>().sortingOrder += gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Legs") != null)
+                transform.Find("Legs").GetComponent<SpriteRenderer>().sortingOrder += gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Face") != null)
+                transform.Find("Face").GetComponent<SpriteRenderer>().sortingOrder += gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Hat") != null)
+                transform.Find("Hat").GetComponent<SpriteRenderer>().sortingOrder += gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+
+
+        }
+
+
+
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && Input.GetKey(KeyCode.W))
+        {
+            Debug.Log("backward");
+            if (gameObject.GetComponent<SpriteRenderer>().sortingOrder > 0)
+                gameObject.GetComponent<SpriteRenderer>().sortingOrder--;
+
+            if (transform.Find("Head") != null)
+                transform.Find("Head").GetComponent<SpriteRenderer>().sortingOrder -= gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Body") != null)
+                transform.Find("Body").GetComponent<SpriteRenderer>().sortingOrder -= gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Legs") != null)
+                transform.Find("Legs").GetComponent<SpriteRenderer>().sortingOrder -= gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Face") != null)
+                transform.Find("Face").GetComponent<SpriteRenderer>().sortingOrder -= gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+            if (transform.Find("Hat") != null)
+                transform.Find("Hat").GetComponent<SpriteRenderer>().sortingOrder -= gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+        }
+
+
+
+
+
+        if (Input.GetMouseButtonDown(2) && Input.GetKey(KeyCode.LeftControl) )
         {
             
                 transform.Rotate(new Vector3(0, 180, 0), Space.World);

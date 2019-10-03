@@ -38,4 +38,22 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/CT/CT_Fail.unity
     guid: 5c724d17e29f0a34e9f5bd39f5e849fd
+  - enabled: 1
+    path: Assets/Scenes/FR/FR_S3.unity
+    guid: cb71b9945ff13d245ade91172e399894
+  - enabled: 1
+    path: Assets/Scenes/FR/FR_S4.unity
+    guid: 616e050283b3d3444bf16d2d86141da8
+  - enabled: 1
+    path: Assets/Scenes/FR/FR_S5.unity
+    guid: cf7f81036cf98b84abc0554ec79c5404
+  - enabled: 1
+    path: Assets/Scenes/FR/FR_S6.unity
+    guid: b54657dc6c098d24da8022689c6d654d
+  - enabled: 1
+    path: Assets/Scenes/FR/FR_S7.unity
+    guid: 3c53add458b3a6546bfe6aadfff5028a
+  - enabled: 1
+    path: Assets/Scenes/FR/FR_END.unity
+    guid: 78e815db85386c2418f44e9eccf60422
   m_configObjects: {}

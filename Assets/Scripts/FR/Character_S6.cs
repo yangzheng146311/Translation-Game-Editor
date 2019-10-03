@@ -73,7 +73,7 @@ public class Character_S6 : MonoBehaviour
             {
 
                 if (collision.gameObject.name == "dog") curHP -= 5;
-                if (collision.gameObject.name == "Periphetes") curHP -= 5;
+                if (collision.gameObject.name == "Periphetes") curHP -= 7;
                 
 
                 
@@ -85,6 +85,7 @@ public class Character_S6 : MonoBehaviour
 
 
                     Debug.Log("Lost");
+                    SceneManager.LoadScene("FR_S6");
                 }
             }
            

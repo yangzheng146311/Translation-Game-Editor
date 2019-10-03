@@ -96,6 +96,7 @@ public class CharacterCreator : MonoBehaviour
         Head = instance;
         Head.transform.localScale = new Vector3(0.1f, 0.1f, 1.0f);
         instance.name = "Head";
+        instance.GetComponent<SpriteRenderer>().sortingOrder = 1;
 
     }
     public void SetBody()
@@ -109,6 +110,7 @@ public class CharacterCreator : MonoBehaviour
         Body = instance;
         Body.transform.localScale = new Vector3(0.1f, 0.1f, 1.0f);
         instance.name = "Body";
+        instance.GetComponent<SpriteRenderer>().sortingOrder = 2;
     }
     public void SetLegs()
     {
@@ -121,6 +123,7 @@ public class CharacterCreator : MonoBehaviour
         Legs = instance;
         Legs.transform.localScale = new Vector3(0.1f, 0.1f, 1.0f);
         instance.name = "Legs";
+        instance.GetComponent<SpriteRenderer>().sortingOrder = 1;
     }
     public void SetHat()
     {
@@ -133,6 +136,9 @@ public class CharacterCreator : MonoBehaviour
         Hat = instance;
         Hat.transform.localScale = new Vector3(0.1f, 0.1f, 1.0f);
         instance.name = "Hat";
+
+        instance.GetComponent<SpriteRenderer>().sortingOrder = 3;
+
     }
 
 

@@ -28,6 +28,8 @@ public class EditManager : MonoBehaviour
     public int curPageIndex;
     public string curPageMusicName;
 
+    public GameObject emptyTextPanel;
+
     string gameTitle = "UnNameGame";
 
     private string path;
@@ -164,12 +166,12 @@ public class EditManager : MonoBehaviour
 
     public void DestroySprite(string name)
     {
-        Destroy(sceneObjects[name]);
+        Destroy(sceneObjects[name]); 
         sceneObjects.Remove(name);
         int index = name.IndexOf('_');
         
-        if(objTypes[name.Substring(0, index)]>0)
-        objTypes[name.Substring(0,index)]--;
+        //if(objTypes[name.Substring(0, index)]>0)
+        //objTypes[name.Substring(0,index)]--;
 
 
     }
@@ -286,7 +288,7 @@ public class EditManager : MonoBehaviour
                     //File.WriteAllText(@objfileName, string.Empty);
                     if (bObject == false)
                     {
-                        file.WriteLine("PageID" + ',' + "ObjectName" + ',' + "SpriteName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale" + ','+ "RotationY");
+                        file.WriteLine("PageID" + ',' + "ObjectName" + ',' + "SpriteName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Pos_Z" + ',' + "Scale" + ','+ "RotationY" + ',' + "RotationZ" + ',' + "SortOrder");
                         bObject =true;
                     }
 
@@ -295,11 +297,14 @@ public class EditManager : MonoBehaviour
                         Transform obj = objects.transform.GetChild(j);
                         string objName = obj.name;
                         string spriteName = obj.GetComponent<SpriteRenderer>().sprite.name;
-                        float pos_x = obj.transform.position.x;
-                        float pos_y = obj.transform.position.y;
+                        float pos_x = obj.transform.localPosition.x;
+                        float pos_y = obj.transform.localPosition.y;
+                        float pos_z = obj.transform.localPosition.z;
                         float scale = obj.transform.localScale.x;
                         float rotationY = obj.transform.rotation.y;
-                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + spriteName + ',' + pos_x + ',' + pos_y + ',' + scale + ',' + rotationY);
+                        float rotationZ = obj.transform.eulerAngles.z;
+                        int order = obj.transform.GetComponent<SpriteRenderer>().sortingOrder;
+                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + spriteName + ',' + pos_x + ',' + pos_y + ',' + pos_z + ',' + scale + ',' + rotationY + ',' + rotationZ + ',' + order);
                     }
 
 
@@ -310,7 +315,7 @@ public class EditManager : MonoBehaviour
                     //File.WriteAllText(@charcfileName, string.Empty);
                     if (bCharacter == false)
                     {
-                        file.WriteLine("PageID" + ',' + "CharacterName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Scale" + ',' + "Hat" + ',' + "Head" + ',' + "Body" + ',' + "Leg" + ',' + "Face" + ',' + "RotationY");
+                        file.WriteLine("PageID" + ',' + "CharacterName" + ',' + "Pos_X" + ',' + "Pos_Y" + ',' + "Pos_Z" + ',' + "Scale" + ',' + "Hat" + ',' + "Head" + ',' + "Body" + ',' + "Leg" + ',' + "Face" + ',' + "RotationY" + ',' + "RotationZ" + ',' + "SortOrder");
                         bCharacter = true;
                     }
 
@@ -318,12 +323,14 @@ public class EditManager : MonoBehaviour
                     {
                         Transform obj = characters.transform.GetChild(k);
                         string objName = obj.name;
-                        float pos_x = obj.transform.position.x;
-                        float pos_y = obj.transform.position.y;
+                        float pos_x = obj.transform.localPosition.x;
+                        float pos_y = obj.transform.localPosition.y;
+                        float pos_z = obj.transform.localPosition.z;
                         float scale = obj.transform.localScale.x;
                         float rotationY = obj.transform.rotation.y;
+                        float rotationZ = obj.transform.eulerAngles.z;
+                        int order = obj.transform.GetComponent<SpriteRenderer>().sortingOrder;
 
-                        Debug.Log("rotationY=" + rotationY);
 
                         string hat = "none", head = "none", body = "none", legs = "none", face = "none";
 
@@ -332,7 +339,7 @@ public class EditManager : MonoBehaviour
                         if (obj.transform.Find("Body").GetComponent<SpriteRenderer>().sprite != null) body = obj.transform.Find("Body").GetComponent<SpriteRenderer>().sprite.name;
                         if (obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sprite != null) legs = obj.transform.Find("Legs").GetComponent<SpriteRenderer>().sprite.name;
                         if (obj.transform.Find("Face").GetComponent<SpriteRenderer>().sprite != null) face = obj.transform.Find("Face").GetComponent<SpriteRenderer>().sprite.name;
-                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + pos_x + ',' + pos_y + ',' + scale + ','   + hat + ',' + head + ',' + body + ',' + legs + ',' + face + ',' + rotationY.ToString());
+                        file.WriteLine(pageIndex.ToString() + ',' + objName + ',' + pos_x + ',' + pos_y + ',' + pos_z + ',' + scale + ','   + hat + ',' + head + ',' + body + ',' + legs + ',' + face + ',' + rotationY.ToString() + ',' + rotationZ.ToString() + ',' + order);
                     }
 
 
@@ -602,15 +609,29 @@ public class EditManager : MonoBehaviour
 
     public void SavePageText()
     {
+       
+        for (int i = 0; i < textCreatorList.transform.childCount; i++)
+        {
+            string text = textCreatorList.transform.GetChild(i).Find("TextCreatorInput").GetComponent<InputField>().text;
+
+            if (text.Trim() == "")
+            {
+                emptyTextPanel.SetActive(true);
+
+                return;
+
+            }
+            
+           
+        }
         int pageIndex = curPageIndex;
         sceneTextList[pageIndex - 1].Clear();
         for (int i = 0; i < textCreatorList.transform.childCount; i++)
         {
             string text = textCreatorList.transform.GetChild(i).Find("TextCreatorInput").GetComponent<InputField>().text;
-            
+
             sceneTextList[pageIndex - 1].Add(text);
         }
-
 
         if (GameObject.Find("TitleInput").GetComponent<InputField>().text.Trim() != "")
             gameTitle = GameObject.Find("TitleInput").GetComponent<InputField>().text;
@@ -618,6 +639,8 @@ public class EditManager : MonoBehaviour
             gameTitle = "UnNameGame";
 
         Debug.Log(gameTitle);
+
+        GameObject.Find("TextViewer").SetActive(false);
     }
 
     public void LoadPageText()
