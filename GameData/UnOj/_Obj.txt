@@ -1,0 +1,4 @@
+﻿PageID,ObjectName,SpriteName,Pos_X,Pos_Y,Pos_Z,Scale,RotationY,RotationZ,SortOrder
+1,Football_0,Football,-2.566371,-2.623821,10,0.2,0,0,0
+2,CherryBlossomTree_0,CherryBlossomTree,-5.044247,-0.50118,10,0.5000001,0,0,0
+3,-Ú©ð+Ê-Ï¦- (107).png_0,-Ú©ð+Ê-Ï¦- (107).png,3.746313,-0.3832546,10,0.2,0.9396926,40,0

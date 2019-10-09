@@ -22,7 +22,7 @@ public class GameImage : MonoBehaviour
     public void LoadGame()
     {
 
-        if (this.gameObject.name != "CS_GAME" && this.gameObject.name != "CT_GAME" && this.gameObject.name != "EN_GAME" && this.gameObject.name != "SP_GAME")
+        if (this.gameObject.name != "CS_GAME" && this.gameObject.name != "CT_GAME" && this.gameObject.name != "EN_GAME" && this.gameObject.name != "SP_GAME" && this.gameObject.name != "FR_GAME")
         {
 
             string gameName = this.gameObject.name;
@@ -44,7 +44,7 @@ public class GameImage : MonoBehaviour
     public void DeleteGame()
     {
 
-        if (this.gameObject.name != "CS_GAME" && this.gameObject.name != "CT_GAME" && this.gameObject.name != "EN_GAME" && this.gameObject.name != "SP_GAME")
+        if (this.gameObject.name != "CS_GAME" && this.gameObject.name != "CT_GAME" && this.gameObject.name != "EN_GAME" && this.gameObject.name != "SP_GAME" && this.gameObject.name != "FR_GAME")
         {
 
 

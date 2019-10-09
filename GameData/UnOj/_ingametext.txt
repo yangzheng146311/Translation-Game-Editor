@@ -1,0 +1,9 @@
+﻿PageID,TextID,OriginText
+1,1,3231
+1,2,321312
+1,3,1231312
+2,1,worini
+2,2,bu yao wan wo le
+2,3,gteoff
+3,1,垃圾啊
+3,2,不玩了

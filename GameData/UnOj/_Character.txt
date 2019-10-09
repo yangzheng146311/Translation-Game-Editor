@@ -1,0 +1,3 @@
+﻿PageID,CharacterName,Pos_X,Pos_Y,Pos_Z,Scale,Hat,Head,Body,Leg,Face,RotationY,RotationZ,SortOrder
+1,character_0,-4.598053,-2.095472,10,2.2,none,DetectiveHead,SamuraiBody,KnightLegs,Expressions_5,0,0,0
+2,character_1,-0.7337472,-2.744056,10,2.2,none,KnightHead,SamuraiBody,KnightLegs,Expressions_5,-1,0,0

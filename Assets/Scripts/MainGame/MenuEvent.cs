@@ -126,7 +126,7 @@ public class MenuEvent : MonoBehaviour
 
     private void LoadInBuildGameImage_Student()
     {
-        string[] fileNames = { "CS_GAME", "CT_GAME", "SP_GAME", "EN_GAME" };
+        string[] fileNames = { "CS_GAME", "CT_GAME", "SP_GAME", "EN_GAME","FR_GAME" };
 
 
 
@@ -145,7 +145,7 @@ public class MenuEvent : MonoBehaviour
 
     private void LoadInBuildGameImage_Teacher()
     {
-        string[] fileNames = { "CS_GAME", "CT_GAME", "SP_GAME", "EN_GAME" };
+        string[] fileNames = { "CS_GAME", "CT_GAME", "SP_GAME", "EN_GAME", "FR_GAME" };
 
 
 
